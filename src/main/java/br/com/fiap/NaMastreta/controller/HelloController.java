@@ -1,16 +1,18 @@
 package br.com.fiap.NaMastreta.controller;
 
+
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+//import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/app")
+//@RequestMapping
 public class HelloController {
 
-    @GetMapping
+    @GetMapping("/hello")
     public String hello(){
-        return "Olá Mundinho";
+        return "Olá Mund";
     }
     
 }
+

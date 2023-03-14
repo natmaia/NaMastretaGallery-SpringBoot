@@ -43,12 +43,7 @@ senha | String | sim | Campo responsavel por armazenar a senha do usuario
 
 ```JSON
 {
-  "imagem":
-    {
-      "sourceUrl": "\"hemlock_6.jpg\"",
-      "status": "OK",
-      }
-  "nome" : "nathalia maia",
+  "nome": "nathalia maia",
   "curador_id":"1",
   "email":"nathalia@maia.com.br",
   "senha":"maia1234"
