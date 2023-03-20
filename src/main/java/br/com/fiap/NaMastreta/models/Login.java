@@ -5,7 +5,9 @@ public class Login {
     private String email;
     private String senha;
 
-
+    public  Login(){
+        
+    }
 
     public Login(String string, String string2) {
     }

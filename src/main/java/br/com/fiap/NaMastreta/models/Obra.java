@@ -3,18 +3,19 @@ package br.com.fiap.NaMastreta.models;
 import java.math.BigDecimal;
 
 
-public class CadastroObra {
+public class Obra {
     //private integer idCurador; ------------- // extends da classe CadastroCurador
     private byte[] ImgObra;
     private String Titulo;
     private String tamanho;
-    private Integer idArtista;
+    //private Integer idArtista;
     private String descricao;
     private BigDecimal valor;
+    private Integer idArtista;
 
 
     
-    public CadastroObra(String titulo, String tamanho, String descricao) {
+    public Obra(String titulo, String tamanho, String descricao) {
         Titulo = titulo;
         this.tamanho = tamanho;
         this.descricao = descricao;
@@ -38,7 +39,7 @@ public class CadastroObra {
         this.tamanho = tamanho;
     }
     public Integer getIdArtista() {
-        return idArtista;
+        return getIdArtista();
     }
     public void setIdArtista(Integer idArtista) {
         this.idArtista = idArtista;
