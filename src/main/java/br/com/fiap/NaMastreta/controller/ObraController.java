@@ -58,10 +58,11 @@ public class ObraController {
 
         if (obraContainer.isPresent()) {
             return ResponseEntity.ok(obraContainer.get());
-        } return ResponseEntity.notFound().build();
-        
+        }
+        return ResponseEntity.notFound().build();
+    }
 
-    // U —  UPDATE
+    // U — UPDATE
 
     @PutMapping("/api/obra/{id}")
     public ResponseEntity<Obra> updateObraById(@PathVariable Integer id, @RequestBody Obra obrinha) {
