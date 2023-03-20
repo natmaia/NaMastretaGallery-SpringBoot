@@ -2,65 +2,44 @@ package br.com.fiap.NaMastreta.models;
 
 import java.math.BigDecimal;
 
+import lombok.Getter;
+import lombok.Setter;
 
-public class Obra {
-    //private integer idCurador; ------------- // extends da classe CadastroCurador
-    private byte[] ImgObra;
-    private String Titulo;
+
+@Setter
+@Getter
+public class Obra extends DadosBase {
+    
+    private Integer id;
     private String tamanho;
-    //private Integer idArtista;
-    private String descricao;
+    private Curador curador;
+    private Artista artista;
     private BigDecimal valor;
-    private Integer idArtista;
 
 
     
-    public Obra(String titulo, String tamanho, String descricao) {
-        Titulo = titulo;
+    public Obra() {
+    }
+
+  
+    public Obra(String foto, String nome, String descricao, String tamanho, Curador curador, Artista artista, BigDecimal valor) {
+        super(foto, nome, descricao);
         this.tamanho = tamanho;
-        this.descricao = descricao;
-    }
-    public byte[] getImgObra() {
-        return ImgObra;
-    }
-    public void setImgObra(byte[] imgObra) {
-        ImgObra = imgObra;
-    }
-    public String getTitulo() {
-        return Titulo;
-    }
-    public void setTitulo(String titulo) {
-        Titulo = titulo;
-    }
-    public String getTamanho() {
-        return tamanho;
-    }
-    public void setTamanho(String tamanho) {
-        this.tamanho = tamanho;
-    }
-    public Integer getIdArtista() {
-        return getIdArtista();
-    }
-    public void setIdArtista(Integer idArtista) {
-        this.idArtista = idArtista;
-    }
-    public String getDescricao() {
-        return descricao;
-    }
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-    public BigDecimal getValor() {
-        return valor;
-    }
-    public void setValor(BigDecimal valor) {
+        this.curador = curador;
+        this.artista = artista;
         this.valor = valor;
     }
+
 
     // em caso de promoção!
     @Override
     public String toString() {
-        return "Obra [valor=" + valor + ", descricao=" + descricao + "]";
+        return "Obra [valor=" + valor + ", descricao=" + super.getDescricao() + "]";
+    }
+
+
+    public int size() {
+        return 0;
     }
 
     
