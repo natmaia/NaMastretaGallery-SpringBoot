@@ -1,9 +1,12 @@
 package br.com.fiap.NaMastreta.controller;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+//import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,95 +15,101 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.NaMastreta.models.Obra;
+import br.com.fiap.NaMastreta.repository.ObraRepository;
 
 @RestController
+@RequestMapping("/api/obra")
 public class ObraController {
 
-    List<Obra> obras = new ArrayList<>();
+    // List<Obra> obras = new ArrayList<>();
+    Logger log = LoggerFactory.getLogger(ObraController.class);
 
-    @GetMapping("/api/obra")
+    @Autowired
+    ObraRepository repository;
+
+    @GetMapping
     public List<Obra> listarObras() {
-        return obras;
+        return repository.findAll();
     }
 
     // C —- CREATE
 
-    @PostMapping("/api/obra")
+    @PostMapping
     public ResponseEntity<Obra> cadastrarObra(@RequestBody Obra obra) {
 
-        obra.setId(obra.size() + 1);
+        log.info("Cadastrando a obrinha: " + obra);
 
-        obras.add(obra);
+        repository.save(obra);
+
+        // obra.setId(obra.size() + 1);
+        // obras.add(obra);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(obra);
 
     }
 
     // R —- READ
+    @GetMapping("{id}")
+    public ResponseEntity<Obra> retornaObraComId(@PathVariable Long id) {
 
-    // @GetMapping("/api/obra")
-    // public Obra show() {
+        log.info("Buscando Obra por id: " + id);
+        var obraEncontrada = repository.findById(id);
 
-    //     return new Obra("foto", "desespero", "foto de um aluno da Fiap", "20x10", null, null, null) {
+        if (obraEncontrada.isEmpty())
+            return ResponseEntity.notFound().build();
 
-    //     };
-
-    // }
-
-    @GetMapping("/api/obra/{id}")
-    public ResponseEntity<Obra> retornaObraComId(@PathVariable Integer id) {
-
-        Optional<Obra> obraContainer = obras.stream().filter((Obra obra) -> obra.getId().equals(id))
-                .findFirst();
-
-        if (obraContainer.isPresent()) {
-            return ResponseEntity.ok(obraContainer.get());
-        }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(obraEncontrada.get());
     }
 
     // U — UPDATE
 
-    @PutMapping("/api/obra/{id}")
-    public ResponseEntity<Obra> updateObraById(@PathVariable Integer id, @RequestBody Obra obrinha) {
+    @PutMapping("{id}")
+    public ResponseEntity<Obra> update(@PathVariable Long id, @RequestBody Obra obra) {
+        log.info("atualizando despesa com id " + id);
+        var obraEncontrada = repository.findById(id);
 
-        Optional<Obra> obraContainer = obras.stream().filter((Obra obra) -> obra.getId().equals(id))
-                .findFirst();
+        if (obraEncontrada.isEmpty())
+            return ResponseEntity.notFound().build();
 
-        if (obraContainer.isPresent()) {
-            obraContainer.get().setFoto(obrinha.getFoto());
-            obraContainer.get().setNome(obrinha.getNome());
-            obraContainer.get().setDescricao(obrinha.getDescricao());
-            obraContainer.get().setTamanho(obrinha.getTamanho());
-            obraContainer.get().setCurador(obrinha.getCurador());
-            obraContainer.get().setArtista(obrinha.getArtista());
-            obraContainer.get().setValor(obrinha.getValor());
-            obraContainer.get().setId(obrinha.getId());
+        obra.setId(id);
+        repository.save(obra);
 
-            return ResponseEntity.ok(obraContainer.get());
-
-        }
-        return ResponseEntity.notFound().build();
-
+        return ResponseEntity.ok(obra);
     }
 
     // D — DELETE
 
-    @DeleteMapping("/api/obra/{id}")
-    public ResponseEntity<Obra> deletaObraComId(@PathVariable Integer id) {
+    @DeleteMapping("{id}")
+    public ResponseEntity<Obra> deletaObraComId(@PathVariable Long id) {
 
-        Optional<Obra> obraContainer = obras.stream().filter((Obra obra) -> obra.getId().equals(id))
-                .findFirst();
+        log.info("apagando obra através do id " + id);
+        var obraEncontrada = repository.findById(id);
 
-        if (obraContainer.isPresent()) {
-            obras.remove(obraContainer.get());
-            return ResponseEntity.noContent().build();
-        }
+        if (obraEncontrada.isEmpty())
+            return ResponseEntity.notFound().build();
 
-        return ResponseEntity.notFound().build();
+        repository.delete(obraEncontrada.get());
+
+        return ResponseEntity.noContent().build();
 
     }
+
 }
+
+    // -----  Entender como faz a versão optional com spring boot JPA -----
+
+    //Alterei tudo para variavel, até entender melhor a estrutura do optional
+
+                        /*
+                        * Optional<Obra> obraContainer = obras.stream().filter((Obra obra) ->
+                        * obra.getId().equals(id))
+                        * .findFirst();
+                        * 
+                        * if (obraContainer.isPresent()) {
+                        * return ResponseEntity.ok(obraContainer.get());
+                        * }
+                        */

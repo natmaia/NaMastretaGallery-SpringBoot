@@ -1,9 +1,12 @@
 package br.com.fiap.NaMastreta.controller;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+//import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,27 +15,32 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.NaMastreta.models.Artista;
+import br.com.fiap.NaMastreta.repository.ArtistaRepository;
 
 @RestController
+@RequestMapping("api/artista")
 public class ArtistaController {
 
-    List<Artista> artistas = new ArrayList<Artista>();
+    // List<Artista> artistas = new ArrayList<Artista>();
+    Logger log = LoggerFactory.getLogger(ArtistaController.class);
 
-    @GetMapping("api/artistas")
+    @Autowired
+    ArtistaRepository repository;
+
+    @GetMapping
     public List<Artista> listarArtistas() {
-        return artistas;
+        return repository.findAll();
     }
 
     // C - Create
-    @PostMapping("api/artista")
+    @PostMapping
     public ResponseEntity<Artista> cadastrar(@RequestBody Artista artista) {
-
-        artista.setId(artistas.size() + 1);
-
-        artistas.add(artista);
+        log.info("Cadastrando novo artista: " + artista);
+        repository.save(artista);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(artista);
 
@@ -41,70 +49,46 @@ public class ArtistaController {
     // R - read
 
     // Get id
-    @GetMapping("api/artista/{id}")
-    public ResponseEntity<Artista> retornaComId(@PathVariable Integer id) {
+    @GetMapping("{id}")
+    public ResponseEntity<Artista> show(@PathVariable Long id) {
+        log.info("buscando artista com id " + id);
+        var artistaEncontrado = repository.findById(id);
 
-        Optional<Artista> artistaContainer = artistas.stream().filter((Artista artista) -> artista.getId().equals(id))
-                .findFirst();
+        if (artistaEncontrado.isEmpty())
+            return ResponseEntity.notFound().build();
 
-        if (artistaContainer.isPresent()) {
-            return ResponseEntity.ok(artistaContainer.get());
-        }
-
-        // for (Artista a : artistas) {
-        // if(a.getId() == id){
-        // return ResponseEntity.ok().body(a);
-        // }
-
-        // }
-
-        return ResponseEntity.notFound().build();
-
-        // optional é tipo uma lista melhorada
-        // stream metodo da lista ->
-        // filter - filtra de acordo com a regra que eu criar na lambda
-        // -> é o que especifica a Lambda
-        // equals valida se é iqual ==
-        // findFirst é o primeiro que ele achar
-
+        return ResponseEntity.ok(artistaEncontrado.get());
     }
 
     // U - update
-    @PutMapping("api/artista/{id}")
-    public ResponseEntity<Artista> updateById(@PathVariable Integer id, @RequestBody Artista art) {
+    @PutMapping("{id}")
+    public ResponseEntity<Artista> updateById(@PathVariable Long id, @RequestBody Artista art) {
+        log.info("atualizando despesa com id " + id);
 
-        Optional<Artista> artistaContainer = artistas.stream().filter((Artista artista) -> artista.getId().equals(id))
-                .findFirst();
+        var artistaEncontrado = repository.findById(id);
 
-        
-        if (artistaContainer.isPresent()) {
-            // Artista updateArtista = art;
-            // updateArtista.setId(artistaContainer.get().getId());
-            // return ResponseEntity.ok(updateArtista);
-                 artistaContainer.get().setFoto(art.getFoto());
-                 artistaContainer.get().setNome(art.getNome());   
-                 
-                 return ResponseEntity.ok(artistaContainer.get());   
-            
-        }
-        
-        return ResponseEntity.notFound().build();
+        if (artistaEncontrado.isEmpty())
+            return ResponseEntity.notFound().build();
 
+        art.setId(id);
+        repository.save(art);
+
+        return ResponseEntity.ok(art);
     }
 
     // D -delete
-    @DeleteMapping("api/artista/{id}")
-    public ResponseEntity<Artista> deletaComId(@PathVariable Integer id) {
+    @DeleteMapping("{id}")
+    public ResponseEntity<Artista> deletaComId(@PathVariable Long id) {
+        log.info("Apagando artista com id: " + id);
 
-        Optional<Artista> artistaContainer = artistas.stream().filter((Artista artista) -> artista.getId().equals(id))
-                .findFirst();
+        var artistaEncontrado = repository.findById(id);
 
-        if (artistaContainer.isPresent()) {
-            artistas.remove(artistaContainer.get());
-            return ResponseEntity.noContent().build();
-        }
+        if (artistaEncontrado.isEmpty())
+            return ResponseEntity.notFound().build();
 
-        return ResponseEntity.notFound().build();
+        repository.delete(artistaEncontrado.get());
+
+        return ResponseEntity.noContent().build();
 
     }
 

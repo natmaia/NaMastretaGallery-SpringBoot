@@ -2,15 +2,21 @@ package br.com.fiap.NaMastreta.models;
 
 import java.math.BigDecimal;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
 
 @Setter
 @Getter
+@Entity
 public class Obra extends DadosBase {
-    
-    private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String tamanho;
     private Curador curador;
     private Artista artista;
@@ -18,7 +24,7 @@ public class Obra extends DadosBase {
 
 
     
-    public Obra() {
+    protected Obra() {
     }
 
   

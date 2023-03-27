@@ -1,9 +1,12 @@
 package br.com.fiap.NaMastreta.controller;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+//import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,90 +15,78 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import br.com.fiap.NaMastreta.models.Curador;
+import br.com.fiap.NaMastreta.repository.CuradorReposity;
 
 @RestController
+@RequestMapping("api/curador")
 public class CuradoriaController {
 
-    List<Curador> curadores = new ArrayList<>();
+    // List<Curador> curadores = new ArrayList<>();
 
-    @GetMapping("api/curador")
+    Logger log = LoggerFactory.getLogger(CuradoriaController.class);
+
+    @Autowired
+    CuradorReposity repository; // IoD
+
+    @GetMapping
     public List<Curador> listarCuradores() {
-        return curadores;
+        return repository.findAll();
     }
 
     // C -- CREATE
-    @PostMapping("api/curador")
-    public ResponseEntity<Curador> cadastrarCurador(@RequestBody Curador curador){
+    @PostMapping
+    public ResponseEntity<Curador> create(@RequestBody Curador curador) {
+        log.info("cadastrando curador: " + curador);
 
-        curador.setId(curadores.size() +1);
-        curadores.add(curador);
+        repository.save(curador);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(curador);
     }
 
     // R —- READ
-    // @GetMapping("api/curador")
-    // public Curador show(){
-        
-    //     return new Curador("foto proficional", "Maia", "Sou aluna de ads", Categoria.ROMANTISMO, null);
-    // }
+    @GetMapping("{id}")
+    public ResponseEntity<Curador> show(@PathVariable Long id) {
+        log.info("buscando despesa com id " + id);
 
-        // read com id
-    @GetMapping("api/curador/{id}")
-    public ResponseEntity<Curador> retornaCuradorComId(@PathVariable Integer id){
+        var curadorEncontrado = repository.findById(id);
 
-        Optional<Curador> curadorContainer = curadores.stream().filter((Curador Curador) -> Curador.getId().equals(id))
-                .findFirst();
+        if (curadorEncontrado.isEmpty())
+            return ResponseEntity.notFound().build();
 
-
-        if (curadorContainer.isPresent()){
-            return ResponseEntity.ok(curadorContainer.get());
-        } return ResponseEntity.notFound().build();
-
+        return ResponseEntity.ok(curadorEncontrado.get());
     }
 
-
     // U — UPDATE
-    @PutMapping("api/curador/{id}")
-    public ResponseEntity<Curador> updateById(@PathVariable Integer id, @RequestBody Curador curadoria) {
+    @PutMapping("{id}")
+    public ResponseEntity<Curador> update(@PathVariable Long id, @RequestBody Curador curador) {
+        log.info("atualizando curador com id " + id);
+        var curadorEncontrado = repository.findById(id);
 
-        Optional<Curador> curadorContainer = curadores.stream().filter((Curador curador) -> curador.getId().equals(id))
-                .findFirst();
+        if (curadorEncontrado.isEmpty())
+            return ResponseEntity.notFound().build();
 
-        if (curadorContainer.isPresent()) {
-            curadorContainer.get().setFoto(curadoria.getFoto());
-            curadorContainer.get().setNome(curadoria.getNome());
-            curadorContainer.get().setTempoAtuacao(curadoria.getDescricao());
-            curadorContainer.get().setCategoria(curadoria.getCategoria());
-            curadorContainer.get().setDescricao(curadoria.getDescricao());
-            curadorContainer.get().setContatos(curadoria.getContatos());
-            curadorContainer.get().setId(curadoria.getId());
+        curador.setId(id);
+        repository.save(curador);
 
-            return ResponseEntity.ok(curadorContainer.get());
-
-        }
-        return ResponseEntity.notFound().build();
-
+        return ResponseEntity.ok(curador);
     }
 
     // D — DELETE
-    @DeleteMapping("api/curador/{id}")
-    public ResponseEntity<Curador> deletaCuradorComId(@PathVariable Integer id){
+    @DeleteMapping("{id}")
+    public ResponseEntity<Curador> destroy(@PathVariable Long id) {
+        log.info("apagando curador com id " + id);
+        var curadorEncontrado = repository.findById(id);
 
-        Optional<Curador> curadorContainer = curadores.stream().filter((Curador curador) -> curador.getId().equals(id))
-                .findFirst();
+        if (curadorEncontrado.isEmpty())
+            return ResponseEntity.notFound().build();
 
-        if (curadorContainer.isPresent()) {
-            curadores.remove(curadorContainer.get());
-            return ResponseEntity.noContent().build();
-        }
+        repository.delete(curadorEncontrado.get());
 
-        return ResponseEntity.notFound().build();
-
+        return ResponseEntity.noContent().build();
     }
 
 }
