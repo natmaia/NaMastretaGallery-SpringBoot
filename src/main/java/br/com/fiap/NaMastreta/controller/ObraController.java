@@ -41,14 +41,14 @@ public class ObraController {
 
     // R —- READ
 
-    @GetMapping("/api/obra")
-    public Obra show() {
+    // @GetMapping("/api/obra")
+    // public Obra show() {
 
-        return new Obra("foto", "desespero", "foto de um aluno da Fiap", "20x10", null, null, null) {
+    //     return new Obra("foto", "desespero", "foto de um aluno da Fiap", "20x10", null, null, null) {
 
-        };
+    //     };
 
-    }
+    // }
 
     @GetMapping("/api/obra/{id}")
     public ResponseEntity<Obra> retornaObraComId(@PathVariable Integer id) {

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.NaMastreta.models.Artista;
-import br.com.fiap.NaMastreta.models.Categoria;
 
 @RestController
 public class ArtistaController {
@@ -40,13 +39,6 @@ public class ArtistaController {
     }
 
     // R - read
-    @GetMapping("api/artista")
-    public Artista show() {
-
-        return new Artista("Foto Fofinha", "Jelson Jinas", "Ele é um Alter ego do Jow", Categoria.NERVOSINHO, null,
-                null);
-
-    }
 
     // Get id
     @GetMapping("api/artista/{id}")
@@ -101,7 +93,7 @@ public class ArtistaController {
     }
 
     // D -delete
-    @DeleteMapping("aapi/artista/{id}")
+    @DeleteMapping("api/artista/{id}")
     public ResponseEntity<Artista> deletaComId(@PathVariable Integer id) {
 
         Optional<Artista> artistaContainer = artistas.stream().filter((Artista artista) -> artista.getId().equals(id))

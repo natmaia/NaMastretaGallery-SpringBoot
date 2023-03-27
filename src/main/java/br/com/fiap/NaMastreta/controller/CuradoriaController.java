@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.fiap.NaMastreta.models.Categoria;
+
 import br.com.fiap.NaMastreta.models.Curador;
 
 @RestController
@@ -31,18 +31,18 @@ public class CuradoriaController {
     @PostMapping("api/curador")
     public ResponseEntity<Curador> cadastrarCurador(@RequestBody Curador curador){
 
-        curador.setId(curador.size() +1);
-        curador.add(curador);
+        curador.setId(curadores.size() +1);
+        curadores.add(curador);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(curador);
     }
 
     // R —- READ
-    @GetMapping("api/curador")
-    public Curador show(){
+    // @GetMapping("api/curador")
+    // public Curador show(){
         
-        return new Curador("foto proficional", "Maia", "Sou aluna de ads", Categoria.ROMANTISMO, null);
-    }
+    //     return new Curador("foto proficional", "Maia", "Sou aluna de ads", Categoria.ROMANTISMO, null);
+    // }
 
         // read com id
     @GetMapping("api/curador/{id}")
