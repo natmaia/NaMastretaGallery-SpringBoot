@@ -1,8 +1,6 @@
 package br.com.fiap.NaMastreta.controller;
 
-//import java.util.ArrayList;
 import java.util.List;
-//import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,18 +17,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.NaMastreta.models.Curador;
-import br.com.fiap.NaMastreta.repository.CuradorReposity;
+import br.com.fiap.NaMastreta.repository.CuradorRepository;
 
 @RestController
 @RequestMapping("api/curador")
-public class CuradoriaController {
+public class CuradorController {
 
-    // List<Curador> curadores = new ArrayList<>();
-
-    Logger log = LoggerFactory.getLogger(CuradoriaController.class);
+    Logger log = LoggerFactory.getLogger(CuradorController.class);
 
     @Autowired
-    CuradorReposity repository; // IoD
+    CuradorRepository repository;
 
     @GetMapping
     public List<Curador> listarCuradores() {
@@ -41,17 +37,14 @@ public class CuradoriaController {
     @PostMapping
     public ResponseEntity<Curador> create(@RequestBody Curador curador) {
         log.info("cadastrando curador: " + curador);
-
         repository.save(curador);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(curador);
     }
 
     // R —- READ
     @GetMapping("{id}")
     public ResponseEntity<Curador> show(@PathVariable Long id) {
-        log.info("buscando despesa com id " + id);
-
+        log.info("buscando curador com id " + id);
         var curadorEncontrado = repository.findById(id);
 
         if (curadorEncontrado.isEmpty())

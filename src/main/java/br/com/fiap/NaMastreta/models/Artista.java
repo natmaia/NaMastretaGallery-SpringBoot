@@ -1,10 +1,19 @@
 package br.com.fiap.NaMastreta.models;
 
+//import br.com.fiap.NaMastreta.models.Categoria;
+
 import java.util.List;
 
+//import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,10 +22,18 @@ import lombok.Setter;
 @Entity
 public class Artista extends DadosBase {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne
+    @Enumerated(EnumType.STRING)
+    @PrimaryKeyJoinColumn(name = "categoria")
     private Categoria categoria;
+
+    @OneToMany
     private List<Obra> obras;
+
+    @OneToOne
     private Curador curador;
 
     public Artista() {

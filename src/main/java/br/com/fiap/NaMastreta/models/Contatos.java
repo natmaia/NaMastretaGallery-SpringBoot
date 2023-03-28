@@ -1,28 +1,39 @@
 package br.com.fiap.NaMastreta.models;
 
-import java.util.List;
+//import java.util.List;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+//import jakarta.persistence.OneToMany;
+//import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
+@Entity
 public class Contatos {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String email;
     private String senha;
     private String redeSocial; // url da rede social
-    private List <Obra> obras;
+
+    // @OneToMany
+    // private List <Obra> obras;
 
     public Contatos (){
 
     }
 
-    public Contatos(String email, String senha, String redeSocial, List<Obra> obras){
+    public Contatos(String email, String senha, String redeSocial){
         this.email = email;
         this.senha = senha;
         this.redeSocial = redeSocial;
-        this.obras = obras;
+        //this.obras = obras;
     }
     
     
