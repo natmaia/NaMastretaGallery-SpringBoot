@@ -1,4 +1,4 @@
-package br.com.fiap.NaMastreta;
+package br.com.fiap.namastreta;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

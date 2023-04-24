@@ -1,11 +1,8 @@
-package br.com.fiap.NaMastreta.models;
+package br.com.fiap.namastreta.models;
 
 import java.math.BigDecimal;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
@@ -15,10 +12,7 @@ import lombok.Setter;
 @Getter
 @Entity
 public class Obra extends DadosBase {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String tamanho;
+ 
 
     @ManyToOne
     @JoinColumn(name = "curador_id")
@@ -33,10 +27,10 @@ public class Obra extends DadosBase {
     protected Obra() {
     }
 
-    public Obra(String foto, String nome, String descricao, String tamanho, Curador curador, Artista artista,
+    public Obra(Long id, String foto, String nome, String descricao, Curador curador, Artista artista,
             BigDecimal valor) {
-        super(foto, nome, descricao);
-        this.tamanho = tamanho;
+        super(id, foto, nome, descricao);
+        //this.tamanho = tamanho;
         this.curador = curador;
         this.artista = artista;
         this.valor = valor;
