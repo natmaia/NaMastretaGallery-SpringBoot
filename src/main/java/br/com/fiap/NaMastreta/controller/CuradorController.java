@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.fiap.namastreta.exception.RestNotFoundException;
 import br.com.fiap.namastreta.models.Curador;
 import br.com.fiap.namastreta.repository.CuradorRepository;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("api/curador")
@@ -35,7 +37,7 @@ public class CuradorController {
 
     // C -- CREATE
     @PostMapping
-    public ResponseEntity<Curador> create(@RequestBody Curador curador) {
+    public ResponseEntity<Curador> create(@RequestBody @Valid Curador curador) {
         log.info("cadastrando curador: " + curador);
         repository.save(curador);
         return ResponseEntity.status(HttpStatus.CREATED).body(curador);
@@ -45,25 +47,25 @@ public class CuradorController {
     @GetMapping("{id}")
     public ResponseEntity<Curador> show(@PathVariable Long id) {
         log.info("buscando curador com id " + id);
-        var curadorEncontrado = repository.findById(id);
+        // var curadorEncontrado = repository.findById(id);
 
-        if (curadorEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
+        // if (curadorEncontrado.isEmpty())
+        //     return ResponseEntity.notFound().build();
 
-        return ResponseEntity.ok(curadorEncontrado.get());
+        return ResponseEntity.ok(getCurador(id));
     }
 
     // U — UPDATE
     @PutMapping("{id}")
-    public ResponseEntity<Curador> update(@PathVariable Long id, @RequestBody Curador curador) {
+    public ResponseEntity<Curador> update(@PathVariable Long id, @RequestBody @Valid Curador curador) {
         log.info("atualizando curador com id " + id);
-        var curadorEncontrado = repository.findById(id);
+        var curadorEncontrado = getCurador(id);
 
-        if (curadorEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
-
-        curador.setId(id);
+        curador.setId(curadorEncontrado.getId());
         repository.save(curador);
+
+        // if (curadorEncontrado.isEmpty())
+        //     return ResponseEntity.notFound().build();
 
         return ResponseEntity.ok(curador);
     }
@@ -72,14 +74,20 @@ public class CuradorController {
     @DeleteMapping("{id}")
     public ResponseEntity<Curador> destroy(@PathVariable Long id) {
         log.info("apagando curador com id " + id);
-        var curadorEncontrado = repository.findById(id);
+        //var curadorEncontrado = getCurador(id);
 
-        if (curadorEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
+        // if (curadorEncontrado.isEmpty())
+        //     return ResponseEntity.notFound().build();
 
-        repository.delete(curadorEncontrado.get());
+        // repository.delete(curadorEncontrado.get());
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(getCurador(id));
+       
+    }
+
+    private Curador getCurador (Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RestNotFoundException("Artista não encontrado"));
     }
 
 }
