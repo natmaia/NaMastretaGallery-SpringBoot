@@ -37,7 +37,17 @@ public class Artista extends DadosBase {
         this.categoria = categoria;
         this.obras = obras;
         this.curador = curador;
+        setId(getId() + 1);
 
     }
+    
+    // Outra forma de fazer a incrementação é utilizando o prepersist - verificar com o prof qual a melhor forma
+        // @PrePersist
+        // public void incrementId() {
+        //     if (getId() == null) {
+        //         setId(0L);
+        //     }
+        //     setId(getId() + 1);
+        // }
 
 }
