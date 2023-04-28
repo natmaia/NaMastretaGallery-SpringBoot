@@ -32,9 +32,13 @@ public class ObraController {
     ObraRepository repository;
 
     @GetMapping
-    public List<Obra> listarObras() {
-        return repository.findAll();
+    public Page<Obra> index(@RequestParam(required=false) String descricao, @PageableDefault(size =5) Pageable pageable){
+        if (descricao == null)
+            return repository.findAll(pageable);
+
+        return repository.findByDescricaoContaining(descricao, pageable);
     }
+    
 
     // C —- CREATE
 

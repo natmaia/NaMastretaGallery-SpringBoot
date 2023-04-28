@@ -11,9 +11,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-@Setter
-@Getter
 @Entity
+@Data
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Artista extends DadosBase {
     //COMENTEI ESSE ID PARA VERIFICAR O ERRO DA ENUM
         // @Id

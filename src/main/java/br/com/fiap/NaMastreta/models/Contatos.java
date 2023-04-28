@@ -13,9 +13,11 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
-@Getter
 @Entity
+@Data
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Contatos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

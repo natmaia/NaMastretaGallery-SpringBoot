@@ -21,21 +21,21 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        artistaRepository.saveAll(List.of(
-            new Artista("url","Maia", "test",Categoria.ROMANTISMO, null, null),
-            new Artista("url","Maia", "test",Categoria.RAIVOSO, null, null),
-            new Artista("url","Maia", "test",Categoria.GOSTOSISSIMO, null, null)
+        Artista a1 = new Artista("url","Maia", "test",Categoria.ROMANTISMO, null, null),
+        Artista a1 = new Artista("url","Maia", "test",Categoria.NERVOSINHO , null, null),
+        Artista a1 = new Artista("url","Maia", "test",Categoria.RAIVOSO, null, null),
+        artistaRepository.saveAll(List.of(a1, a2, a3));
 
-        ));
+        Curador c1 = new Curador("url", "nome", "test 2", Categoria.FOFINHO, "2 anos"),
+        Curador c2 = new Curador("url", "nome", "test 3", Categoria.NERVOSINHO, "3 anos"),
+        Curador c3 = new Curador("url", "nome", "test 3", Categoria.RAIVOSO, "4 anos"),
+        curadorRepository.saveAll(List.of(c1, c2, c3)),
 
-        curadorRepository.saveAll(List.of(
-            new Curador("url", "nome", "test 2", Categoria.FOFINHO, "2 anos"),
-            new Curador("url", "nome", "test 3", Categoria.FOFINHO, "3 anos"),
-            new Curador("url", "nome", "test 3", Categoria.FOFINHO, "4 anos")
+
+        Obra.builder().valor(new BigDecimal(100)).descricao("aluguel").build(),
+        Obra.builder().valor(new BigDecimal(200)).curador_id(c1).build(),
             
-
-        ));
-
+         
     }
 
 }

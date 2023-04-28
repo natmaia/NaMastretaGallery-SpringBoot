@@ -31,9 +31,17 @@ public class ArtistaController {
     @Autowired
     ArtistaRepository repository;
 
+    // @GetMapping
+    // public List<Artista> listarArtistas() {
+    //     return repository.findAll();
+    // }
+
     @GetMapping
-    public List<Artista> listarArtistas() {
-        return repository.findAll();
+    public Page<Curador> index(@RequestParam(required=false) String nome , @PageableDefault() Pageable pageable){
+        if (nome == null)
+            return repository.findAll(pageable);
+
+        return repository.findByName(nome, pageable);
     }
 
     // C - Create

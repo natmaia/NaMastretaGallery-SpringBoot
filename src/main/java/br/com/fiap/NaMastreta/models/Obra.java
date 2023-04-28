@@ -10,9 +10,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
-@Getter
 @Entity
+@Data
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Obra extends DadosBase {
  
 

@@ -30,10 +30,19 @@ public class CuradorController {
     @Autowired
     CuradorRepository repository;
 
+    // @GetMapping
+    // public List<Curador> listarCuradores() {
+    //     return repository.findAll();
+    // }
+
     @GetMapping
-    public List<Curador> listarCuradores() {
-        return repository.findAll();
+    public Page<Curador> index(@RequestParam(required=false) String nome , @PageableDefault() Pageable pageable){
+        if (nome == null)
+            return repository.findAll(pageable);
+
+        return repository.findByName(nome, pageable);
     }
+
 
     // C -- CREATE
     @PostMapping
