@@ -14,7 +14,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 
 import br.com.fiap.namastreta.exception.RestNotFoundException;
 import br.com.fiap.namastreta.models.Obra;
@@ -31,14 +40,31 @@ public class ObraController {
     @Autowired
     ObraRepository repository;
 
-    @GetMapping
-    public Page<Obra> index(@RequestParam(required=false) String descricao, @PageableDefault(size =5) Pageable pageable){
-        if (descricao == null)
-            return repository.findAll(pageable);
 
-        return repository.findByDescricaoContaining(descricao, pageable);
-    }
+    @Autowired
+    PagedResourcesAssembler<Object> assembler;
+
+
+    // @GetMapping
+    // public Page<Obra> index(@RequestParam(required=false) String descricao, @PageableDefault(size =5) Pageable pageable){
+    //     if (descricao == null)
+    //         return repository.findAll(pageable);
+
+    //     return repository.findByDescricaoContaining(descricao, pageable);
+    // }
     
+
+    @GetMapping
+    public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String descricao, @PageableDefault(size = 5) Pageable pageable) {
+        Page<Obra> obras = (descricao == null)?
+            repository.findAll(pageable):
+            repository.findByDescricaoContaining(descricao, pageable);
+
+        return assembler.toModel(obras.map(Obra::toEntityModel));
+    }
+
+
+
 
     // C —- CREATE
 

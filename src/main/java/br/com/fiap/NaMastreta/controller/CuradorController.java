@@ -16,6 +16,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
+
 import br.com.fiap.namastreta.exception.RestNotFoundException;
 import br.com.fiap.namastreta.models.Curador;
 import br.com.fiap.namastreta.repository.CuradorRepository;
@@ -35,33 +43,40 @@ public class CuradorController {
     //     return repository.findAll();
     // }
 
+    // @GetMapping
+    // public Page<Curador> index(@RequestParam(required=false) String nome , @PageableDefault() Pageable pageable){
+    //     if (nome == null)
+    //         return repository.findAll(pageable);
+
+    //     return repository.findByName(nome, pageable);
+    // }
+
     @GetMapping
-    public Page<Curador> index(@RequestParam(required=false) String nome , @PageableDefault() Pageable pageable){
-        if (nome == null)
-            return repository.findAll(pageable);
+    public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String nome, @PageableDefault() Pageable pageable) {
+        Page<Curador> curadores = (nome == null)?
+            repository.findAll(pageable):
+            repository.findByName(nome, pageable);
 
-        return repository.findByName(nome, pageable);
+        return assembler.toModel(curadores.map(Curador::toEntityModel));
     }
-
-
+  
     // C -- CREATE
     @PostMapping
-    public ResponseEntity<Curador> create(@RequestBody @Valid Curador curador) {
+    public ResponseEntity<Object> create(@RequestBody @Valid Curador curador) {
         log.info("cadastrando curador: " + curador);
         repository.save(curador);
-        return ResponseEntity.status(HttpStatus.CREATED).body(curador);
+        return ResponseEntity.created(despesa.toEntityModel().getRequiredLink("self").toUri()).body(despesa.toEntityModel());
     }
 
     // R —- READ
     @GetMapping("{id}")
-    public ResponseEntity<Curador> show(@PathVariable Long id) {
+    public EntityModel<Curador> show(@PathVariable Long id) {
         log.info("buscando curador com id " + id);
         // var curadorEncontrado = repository.findById(id);
-
         // if (curadorEncontrado.isEmpty())
-        //     return ResponseEntity.notFound().build();
+        // return ResponseEntity.notFound().build();
 
-        return ResponseEntity.ok(getCurador(id));
+        return getCurador(id).toEntityModel();
     }
 
     // U — UPDATE
