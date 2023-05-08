@@ -21,6 +21,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
+
 import br.com.fiap.namastreta.exception.RestNotFoundException;
 import br.com.fiap.namastreta.models.Obra;
 import br.com.fiap.namastreta.repository.ObraRepository;
@@ -40,6 +48,7 @@ public class ObraController {
     @Autowired
     PagedResourcesAssembler<Object> assembler;
 
+<<<<<<< HEAD
     @GetMapping
     public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String descricao, @PageableDefault(size = 5) Pageable pageable) {
         Page<Obra> obras = (descricao == null)?
@@ -48,6 +57,29 @@ public class ObraController {
 
         return assembler.toModel(obras.map(Obra::toEntityModel));
     }
+=======
+
+    // @GetMapping
+    // public Page<Obra> index(@RequestParam(required=false) String descricao, @PageableDefault(size =5) Pageable pageable){
+    //     if (descricao == null)
+    //         return repository.findAll(pageable);
+
+    //     return repository.findByDescricaoContaining(descricao, pageable);
+    // }
+    
+>>>>>>> 14f8cf990b328dc6d28d839d71be8aba52fe437a
+
+    @GetMapping
+    public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String descricao, @PageableDefault(size = 5) Pageable pageable) {
+        Page<Obra> obras = (descricao == null)?
+            repository.findAll(pageable):
+            repository.findByDescricaoContaining(descricao, pageable);
+
+        return assembler.toModel(obras.map(Obra::toEntityModel));
+    }
+
+
+
 
     // C —- CREATE
 

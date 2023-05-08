@@ -1,5 +1,6 @@
 package br.com.fiap.namastreta.config;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import br.com.fiap.namastreta.models.Artista;
 import br.com.fiap.namastreta.models.Categoria;
 import br.com.fiap.namastreta.models.Curador;
+import br.com.fiap.namastreta.models.Obra;
 import br.com.fiap.namastreta.repository.ArtistaRepository;
 import br.com.fiap.namastreta.repository.CuradorRepository;
 
@@ -30,7 +32,15 @@ public class DatabaseSeeder implements CommandLineRunner {
         Curador c2 = new Curador("url", "nome", "test 3", Categoria.NERVOSINHO, "3 anos");
         Curador c3 = new Curador("url", "nome", "test 3", Categoria.RAIVOSO, "4 anos");
         curadorRepository.saveAll(List.of(c1, c2, c3));
+<<<<<<< HEAD
          
+=======
+
+
+        Obra.builder().valor(new BigDecimal(100)).descricao("aluguel").build();
+        Obra.builder().valor(new BigDecimal(200)).curador_id(c1).build();
+            
+>>>>>>> 14f8cf990b328dc6d28d839d71be8aba52fe437a
          
     }
 
