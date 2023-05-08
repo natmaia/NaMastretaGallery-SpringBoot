@@ -1,14 +1,17 @@
 package br.com.fiap.namastreta.models;
 
+import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
 
 @Entity
 @Data
-@NoArgsConstructor
 @Builder
 @AllArgsConstructor
 public class Login {
@@ -26,8 +29,8 @@ public class Login {
         
     }
 
-    public Login(String string, String string2) {
-    }
+    // public Login(String string, String string2) {
+    // }
     
     public String getEmail() {
         return email;
@@ -41,7 +44,6 @@ public class Login {
     public void setSenha(String senha) {
         this.senha = senha;
     }
-
-    
+  
 
 }

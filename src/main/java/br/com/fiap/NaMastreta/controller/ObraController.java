@@ -1,10 +1,14 @@
 package br.com.fiap.namastreta.controller;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,14 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.PagedModel;
 
 import br.com.fiap.namastreta.exception.RestNotFoundException;
 import br.com.fiap.namastreta.models.Obra;
@@ -44,16 +40,6 @@ public class ObraController {
     @Autowired
     PagedResourcesAssembler<Object> assembler;
 
-
-    // @GetMapping
-    // public Page<Obra> index(@RequestParam(required=false) String descricao, @PageableDefault(size =5) Pageable pageable){
-    //     if (descricao == null)
-    //         return repository.findAll(pageable);
-
-    //     return repository.findByDescricaoContaining(descricao, pageable);
-    // }
-    
-
     @GetMapping
     public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String descricao, @PageableDefault(size = 5) Pageable pageable) {
         Page<Obra> obras = (descricao == null)?
@@ -63,52 +49,41 @@ public class ObraController {
         return assembler.toModel(obras.map(Obra::toEntityModel));
     }
 
-
-
-
     // C —- CREATE
 
     @PostMapping
-    public ResponseEntity<Obra> cadastrarObra(@RequestBody @Valid Obra obra) {
+    public ResponseEntity<EntityModel<Obra>> cadastrarObra(@RequestBody @Valid Obra obra) {
 
         log.info("Cadastrando a obrinha: " + obra);
 
         repository.save(obra);
 
-        // obra.setId(obra.size() + 1);
-        // obras.add(obra);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(obra);
+        return ResponseEntity
+                .created(obra.toEntityModel().getRequiredLink("self").toUri())
+                .body(obra.toEntityModel());
 
     }
-
+        
     // R —- READ
     @GetMapping("{id}")
-    public ResponseEntity<Obra> retornaObraComId(@PathVariable Long id) {
+    public EntityModel<Obra> retornaObraComId(@PathVariable Long id) {
 
         log.info("Buscando Obra por id: " + id);
         
-
-        return ResponseEntity.ok(getObra(id));
+        return getObra(id).toEntityModel();
     }
 
     // U — UPDATE
 
     @PutMapping("{id}")
-    public ResponseEntity<Obra> update(@PathVariable Long id, @RequestBody @Valid Obra obra) {
+    public EntityModel<Obra> update(@PathVariable Long id, @RequestBody @Valid Obra obra) {
         log.info("atualizando despesa com id " + id);
         var obraEncontrada = getObra(id);
 
         obra.setId(obraEncontrada.getId());
         repository.save(obra);
 
-
-
-        // if (obraEncontrada.isEmpty())
-        //     return ResponseEntity.notFound().build();
-        // 
-
-        return ResponseEntity.ok(obra);
+        return obra.toEntityModel();
     }
 
     // D — DELETE
@@ -117,11 +92,6 @@ public class ObraController {
     public ResponseEntity<Obra> deletaObraComId(@PathVariable Long id) {
 
         log.info("apagando obra através do id " + id);
-       
-        // if (obraEncontrada.isEmpty())
-        //     return ResponseEntity.notFound().build();
-
-        // repository.delete(obraEncontrada.get());
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(getObra(id));
 
@@ -130,6 +100,14 @@ public class ObraController {
     private Obra getObra (Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RestNotFoundException("Artista não encontrado"));
+    }
+
+    public Class<?> show(Long long1) {
+        return null;
+    }
+
+    public Object destroy(Long id) {
+        return null;
     }
 
 }

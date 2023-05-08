@@ -12,7 +12,7 @@ public abstract class DadosBase {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    protected Long id;
 
     @NotBlank(message = "A foto é obrigatória")
     private String foto;

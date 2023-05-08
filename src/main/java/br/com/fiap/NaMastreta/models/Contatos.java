@@ -10,8 +10,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
@@ -39,9 +41,9 @@ public class Contatos {
     // @OneToMany
     // private List <Obra> obras;
 
-    public Contatos (){
+    // public Contatos (){
 
-    }
+    // }
 
     public Contatos(String email, String senha, String redeSocial){
         this.email = email;

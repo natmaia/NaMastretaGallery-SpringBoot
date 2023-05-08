@@ -1,7 +1,16 @@
 package br.com.fiap.namastreta.models;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.math.BigDecimal;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.EntityModel;
+
+import br.com.fiap.namastreta.controller.ArtistaController;
+import br.com.fiap.namastreta.controller.CuradorController;
+import br.com.fiap.namastreta.controller.ObraController;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -10,15 +19,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
-@NoArgsConstructor
 @Builder
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class Obra extends DadosBase {
  
 
@@ -57,4 +64,21 @@ public class Obra extends DadosBase {
         return 0;
     }
 
+    public EntityModel<Obra> toEntityModel(){
+        return EntityModel.of(
+            this, 
+            linkTo(methodOn(ObraController.class).show(id)).withSelfRel(),
+            linkTo(methodOn(ObraController.class).destroy(id)).withRel("delete"),
+            linkTo(methodOn(ObraController.class).index(null, Pageable.unpaged())).withRel("all"),
+            linkTo(methodOn(ArtistaController.class).show(this.getArtista().getId())).withRel("artista"),
+            linkTo(methodOn(CuradorController.class).show(this.getArtista().getId())).withRel("curador")
+        );
+    }
+
+    public static Object builder() {
+        return null;
+    }
+
 }
+
+//@EqualsAndHashCode(callSuper=true) é para o @Data criar da super classe.

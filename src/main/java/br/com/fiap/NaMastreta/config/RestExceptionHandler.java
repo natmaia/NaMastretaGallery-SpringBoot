@@ -34,12 +34,8 @@ public class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RestValidationError(null, e.getMessage()));
     }
 
-    
-
-
-// Aqui vc determina a mensagem de cada exception
-
-        // RestNotFoundException("Artista não encontrado"));
-
 
 }
+// Aqui vc determina a mensagem de cada exception
+
+// RestNotFoundException("Artista não encontrado"));

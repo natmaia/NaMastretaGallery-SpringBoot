@@ -1,10 +1,14 @@
 package br.com.fiap.namastreta.controller;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,14 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.PagedModel;
 
 import br.com.fiap.namastreta.exception.RestNotFoundException;
 import br.com.fiap.namastreta.models.Artista;
@@ -43,19 +39,6 @@ public class ArtistaController {
     @Autowired
     PagedResourcesAssembler<Object> assembler;
 
-    // @GetMapping
-    // public List<Artista> listarArtistas() {
-    //     return repository.findAll();
-    // }
-
-    // @GetMapping
-    // public Page<Curador> index(@RequestParam(required=false) String nome , @PageableDefault() Pageable pageable){
-    //     if (nome == null)
-    //         return repository.findAll(pageable);
-
-    //     return repository.findByName(nome, pageable);
-    // }
-
     @GetMapping
     public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String nome, @PageableDefault() Pageable pageable) {
         Page<Artista> artistas = (nome == null)?
@@ -65,13 +48,16 @@ public class ArtistaController {
         return assembler.toModel(artistas.map(Artista::toEntityModel));
     }
 
+
     // C - Create
     @PostMapping
     public ResponseEntity<Object> cadastrar(@RequestBody @Valid Artista artista) {
         log.info("Cadastrando novo artista: " + artista);
         repository.save(artista);
 
-        return ResponseEntity.created(artista.toEntityModel().getRequiredLink("self").toUri()).body(artista.toEntityModel());
+        return ResponseEntity
+                .created(artista.toEntityModel().getRequiredLink("self").toUri())
+                .body(artista.toEntityModel());
     }
 
     // R - read (get-id)
@@ -79,12 +65,8 @@ public class ArtistaController {
     @GetMapping("{id}")
     public EntityModel<Artista> show(@PathVariable Long id) {
         log.info("buscando artista com id " + id);
-        return getDespesa(id).toEntityModel();
+        return getArtista(id).toEntityModel();
 
-        //var artistaEncontrado = getArtista(id);
-        // if (artistaEncontrado.isEmpty())
-        //     return ResponseEntity.notFound().build();
-        //return ResponseEntity.ok(artistaEncontrado);
     }
 
     
@@ -95,13 +77,10 @@ public class ArtistaController {
 
         var artistaEncontrado =getArtista(id);
 
-        // if (artistaEncontrado.isEmpty())
-        //     return ResponseEntity.notFound().build();
-
         art.setId(artistaEncontrado.getId());
         repository.save(art);
 
-        return artista.toEntityModel();
+        return art.toEntityModel();
     }
 
     // D -delete
@@ -110,9 +89,6 @@ public class ArtistaController {
         log.info("Apagando artista com id: " + id);
 
         var artistaEncontrado = repository.findById(id);
-
-        // if (artistaEncontrado.isEmpty())
-        //     return ResponseEntity.notFound().build();
 
         repository.delete(artistaEncontrado.get());
 
@@ -123,6 +99,11 @@ public class ArtistaController {
     private Artista getArtista(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RestNotFoundException("Artista não encontrado"));
+    }
+
+
+    public Class<?> destroy(Long id) {
+        return null;
     }
 
 }
