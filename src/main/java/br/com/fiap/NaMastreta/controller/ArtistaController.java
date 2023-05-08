@@ -43,7 +43,7 @@ public class ArtistaController {
     public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String nome, @PageableDefault() Pageable pageable) {
         Page<Artista> artistas = (nome == null)?
             repository.findAll(pageable):
-            repository.findByName(nome, pageable);
+            repository.findByNome(nome, pageable);
 
         return assembler.toModel(artistas.map(Artista::toEntityModel));
     }

@@ -43,7 +43,7 @@ public class CuradorController {
     public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String nome, @PageableDefault() Pageable pageable) {
         Page<Curador> curadores = (nome == null)?
             repository.findAll(pageable):
-            repository.findByName(nome, pageable);
+            repository.findByNome(nome, pageable);
 
         return assembler.toModel(curadores.map(Curador::toEntityModel));
     }
