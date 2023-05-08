@@ -48,7 +48,6 @@ public class ObraController {
     @Autowired
     PagedResourcesAssembler<Object> assembler;
 
-<<<<<<< HEAD
     @GetMapping
     public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String descricao, @PageableDefault(size = 5) Pageable pageable) {
         Page<Obra> obras = (descricao == null)?
@@ -57,29 +56,6 @@ public class ObraController {
 
         return assembler.toModel(obras.map(Obra::toEntityModel));
     }
-=======
-
-    // @GetMapping
-    // public Page<Obra> index(@RequestParam(required=false) String descricao, @PageableDefault(size =5) Pageable pageable){
-    //     if (descricao == null)
-    //         return repository.findAll(pageable);
-
-    //     return repository.findByDescricaoContaining(descricao, pageable);
-    // }
-    
->>>>>>> 14f8cf990b328dc6d28d839d71be8aba52fe437a
-
-    @GetMapping
-    public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String descricao, @PageableDefault(size = 5) Pageable pageable) {
-        Page<Obra> obras = (descricao == null)?
-            repository.findAll(pageable):
-            repository.findByDescricaoContaining(descricao, pageable);
-
-        return assembler.toModel(obras.map(Obra::toEntityModel));
-    }
-
-
-
 
     // C —- CREATE
 

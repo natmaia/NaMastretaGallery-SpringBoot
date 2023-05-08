@@ -21,14 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.PagedModel;
-
 import br.com.fiap.namastreta.exception.RestNotFoundException;
 import br.com.fiap.namastreta.models.Artista;
 import br.com.fiap.namastreta.repository.ArtistaRepository;
@@ -43,39 +35,18 @@ public class ArtistaController {
 
     @Autowired
     ArtistaRepository repository; //IoD
-<<<<<<< HEAD
-=======
-
-    @Autowired
-    PagedResourcesAssembler<Object> assembler;
->>>>>>> 14f8cf990b328dc6d28d839d71be8aba52fe437a
 
     @Autowired
     PagedResourcesAssembler<Object> assembler;
 
-<<<<<<< HEAD
+
     @GetMapping
     public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String nome, @PageableDefault() Pageable pageable) {
         Page<Artista> artistas = (nome == null)?
             repository.findAll(pageable):
             repository.findByNome(nome, pageable);
 
-=======
-    // @GetMapping
-    // public Page<Curador> index(@RequestParam(required=false) String nome , @PageableDefault() Pageable pageable){
-    //     if (nome == null)
-    //         return repository.findAll(pageable);
 
-    //     return repository.findByName(nome, pageable);
-    // }
-
-    @GetMapping
-    public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String nome, @PageableDefault() Pageable pageable) {
-        Page<Artista> artistas = (nome == null)?
-            repository.findAll(pageable):
-            repository.findByName(nome, pageable);
-
->>>>>>> 14f8cf990b328dc6d28d839d71be8aba52fe437a
         return assembler.toModel(artistas.map(Artista::toEntityModel));
     }
 
@@ -86,13 +57,10 @@ public class ArtistaController {
         log.info("Cadastrando novo artista: " + artista);
         repository.save(artista);
 
-<<<<<<< HEAD
         return ResponseEntity
                 .created(artista.toEntityModel().getRequiredLink("self").toUri())
                 .body(artista.toEntityModel());
-=======
-        return ResponseEntity.created(artista.toEntityModel().getRequiredLink("self").toUri()).body(artista.toEntityModel());
->>>>>>> 14f8cf990b328dc6d28d839d71be8aba52fe437a
+
     }
 
     // R - read (get-id)
@@ -100,17 +68,8 @@ public class ArtistaController {
     @GetMapping("{id}")
     public EntityModel<Artista> show(@PathVariable Long id) {
         log.info("buscando artista com id " + id);
-<<<<<<< HEAD
         return getArtista(id).toEntityModel();
 
-=======
-        return getDespesa(id).toEntityModel();
-
-        //var artistaEncontrado = getArtista(id);
-        // if (artistaEncontrado.isEmpty())
-        //     return ResponseEntity.notFound().build();
-        //return ResponseEntity.ok(artistaEncontrado);
->>>>>>> 14f8cf990b328dc6d28d839d71be8aba52fe437a
     }
 
     
@@ -124,11 +83,8 @@ public class ArtistaController {
         art.setId(artistaEncontrado.getId());
         repository.save(art);
 
-<<<<<<< HEAD
         return art.toEntityModel();
-=======
-        return artista.toEntityModel();
->>>>>>> 14f8cf990b328dc6d28d839d71be8aba52fe437a
+
     }
 
     // D -delete

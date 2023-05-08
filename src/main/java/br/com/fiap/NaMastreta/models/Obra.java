@@ -19,13 +19,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-<<<<<<< HEAD
 import lombok.EqualsAndHashCode;
-=======
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
->>>>>>> 14f8cf990b328dc6d28d839d71be8aba52fe437a
 
 @Entity
 @Data
