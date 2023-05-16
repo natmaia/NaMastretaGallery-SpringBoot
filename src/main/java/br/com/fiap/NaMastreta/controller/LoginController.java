@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.fiap.meujulius.models.Credencial;
-import br.com.fiap.meujulius.models.Usuario;
-import br.com.fiap.meujulius.repository.UsuarioRepository;
+import br.com.fiap.namastreta.models.Credencial;
+import br.com.fiap.namastreta.models.Login;
+import br.com.fiap.namastreta.repository.LoginRepository;
 import jakarta.validation.Valid;
 
 @RestController
-public class UsuarioController {
+public class LoginController {
 
     @Autowired
-    UsuarioRepository repository;
+    LoginRepository repository;
 
     @Autowired
     AuthenticationManager manager;
@@ -27,10 +27,10 @@ public class UsuarioController {
     PasswordEncoder encoder;
 
     @PostMapping("/api/registrar")
-    public ResponseEntity<Usuario> registrar(@RequestBody @Valid Usuario usuario){
-        usuario.setSenha(encoder.encode(usuario.getSenha()));
-        repository.save(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuario);
+    public ResponseEntity<Login> registrar(@RequestBody @Valid Login login){
+        login.setSenha(encoder.encode(login.getSenha()));
+        repository.save(login);
+        return ResponseEntity.status(HttpStatus.CREATED).body(login);
     }
 
     @PostMapping("/api/login")
