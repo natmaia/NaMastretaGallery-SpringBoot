@@ -8,8 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.PagedModel;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,98 +30,80 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/obra")
 public class ObraController {
 
-    // List<Obra> obras = new ArrayList<>();
-    Logger log = LoggerFactory.getLogger(ObraController.class);
+    private final Logger log = LoggerFactory.getLogger(ObraController.class);
 
     @Autowired
-    ObraRepository repository;
-
+    private ObraRepository obraRepository;
 
     @Autowired
-    PagedResourcesAssembler<Object> assembler;
+    private PagedResourcesAssembler<Obra> assembler;
 
-    @GetMapping
-    public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String descricao, @PageableDefault(size = 5) Pageable pageable) {
-        Page<Obra> obras = (descricao == null)?
-            repository.findAll(pageable):
-            repository.findByDescricaoContaining(descricao, pageable);
+    
 
-        return assembler.toModel(obras.map(Obra::toEntityModel));
+    private Obra getObra(Long id) {
+        return obraRepository.findById(id)
+                .orElseThrow(() -> new RestNotFoundException("Obra não encontrada"));
     }
 
-    // C —- CREATE
+    @GetMapping
+    public PagedModel<EntityModel<Obra>> index(@RequestParam(required = false) String descricao, @PageableDefault(size = 5) Pageable pageable) {
+        Page<Obra> obras = (descricao == null) ?
+                obraRepository.findAll(pageable) :
+                obraRepository.findByDescricaoContaining(descricao, pageable);
+    
+        return assembler.toModel(obras, Obra::toEntityModel);
+    }
+    
 
     @PostMapping
     public ResponseEntity<EntityModel<Obra>> cadastrarObra(@RequestBody @Valid Obra obra) {
-
-        log.info("Cadastrando a obrinha: " + obra);
-
-        repository.save(obra);
+        log.info("Cadastrando a obra: " + obra);
+        Obra savedObra = obraRepository.save(obra);
 
         return ResponseEntity
-                .created(obra.toEntityModel().getRequiredLink("self").toUri())
-                .body(obra.toEntityModel());
-
+                .created(savedObra.toEntityModel().getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(savedObra.toEntityModel());
     }
-        
-    // R —- READ
+
     @GetMapping("{id}")
     public EntityModel<Obra> retornaObraComId(@PathVariable Long id) {
-
-        log.info("Buscando Obra por id: " + id);
-        
-        return getObra(id).toEntityModel();
-    }
-
-    // U — UPDATE
-
-    @PutMapping("{id}")
-    public EntityModel<Obra> update(@PathVariable Long id, @RequestBody @Valid Obra obra) {
-        log.info("atualizando despesa com id " + id);
-        var obraEncontrada = getObra(id);
-
-        obra.setId(obraEncontrada.getId());
-        repository.save(obra);
-
+        log.info("Buscando obra por id: " + id);
+        Obra obra = getObra(id);
         return obra.toEntityModel();
     }
 
-    // D — DELETE
+    @PutMapping("{id}")
+    public ResponseEntity<EntityModel<Obra>> update(@PathVariable Long id, @RequestBody @Valid Obra obra) {
+        log.info("Atualizando obra com id: " + id);
+
+        Obra obraEncontrada = getObra(id);
+
+        obraEncontrada.setDescricao(obra.getDescricao());
+        obraEncontrada.setFoto(obra.getFoto());
+        obraEncontrada.setArtista(obra.getArtista());
+        obraEncontrada.setCurador(obra.getCurador());
+        obraEncontrada.setValor(obra.getValor());
+
+        Obra updatedObra = obraRepository.save(obraEncontrada);
+
+        return ResponseEntity.ok(updatedObra.toEntityModel());
+    }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Obra> deletaObraComId(@PathVariable Long id) {
+    public ResponseEntity<Void> deletaObraComId(@PathVariable Long id) {
+        log.info("Apagando obra através do id: " + id);
 
-        log.info("apagando obra através do id " + id);
+        Obra obraEncontrada = getObra(id);
+        obraRepository.delete(obraEncontrada);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(getObra(id));
-
+        return ResponseEntity.noContent().build();
     }
 
-    private Obra getObra (Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RestNotFoundException("Artista não encontrado"));
-    }
-
-    public Class<?> show(Long long1) {
+    public Class<?> show(Long id) {
         return null;
     }
 
-    public Object destroy(Long id) {
+    public Class<?> destroy(Long id) {
         return null;
     }
-
 }
-
-    // -----  Entender como faz a versão optional com spring boot JPA -----
-
-    //Alterei tudo para variavel, até entender melhor a estrutura do optional
-
-                        /*
-                        * Optional<Obra> obraContainer = obras.stream().filter((Obra obra) ->
-                        * obra.getId().equals(id))
-                        * .findFirst();
-                        * 
-                        * if (obraContainer.isPresent()) {
-                        * return ResponseEntity.ok(obraContainer.get());
-                        * }
-                        */

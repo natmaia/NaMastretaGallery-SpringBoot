@@ -13,6 +13,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,7 +32,7 @@ public class Curador extends DadosBase {
     @Enumerated(EnumType.STRING)
     private Categoria categoria;
 
-    @Positive(message = "O tempo de atuação deve ser maior que zero")
+    @NotEmpty(message = "O tempo de atuação não pode estar vazio")
     private String tempoAtuacao;
 
     @OneToOne
@@ -41,16 +42,6 @@ public class Curador extends DadosBase {
         super(foto, nome, descricao);
         this.categoria = categoria;
         this.tempoAtuacao = tempoAtuacao;
-        setId(getId() + 1);
-    }
-
-
-    public int size() {
-        return 0;
-    }
-
-
-    public void add(Curador curador) {
     }
 
     public EntityModel<Curador> toEntityModel(){
@@ -64,16 +55,15 @@ public class Curador extends DadosBase {
         );
     }
 
-    // Para fazer o link (em analise na regra de negocio)
-    private DadosBase getObra() {
+    private Obra getObra() {
         return null;
     }
 
-
-    private DadosBase getArtista() {
+    private Artista getArtista() {
         return null;
     }
    
 }
+
 
 //@EqualsAndHashCode(callSuper=true) é para o @Data criar da super classe.

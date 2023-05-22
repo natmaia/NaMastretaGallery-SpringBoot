@@ -38,20 +38,10 @@ public class Contatos {
     private String redeSocial; // url da rede social
 
 
-    // @OneToMany
-    // private List <Obra> obras;
-
-    // public Contatos (){
-
-    // }
-
     public Contatos(String email, String senha, String redeSocial){
         this.email = email;
         this.senha = senha;
         this.redeSocial = redeSocial;
-        //this.obras = obras;
     }
-    
-    
 
 }

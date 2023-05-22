@@ -1,37 +1,51 @@
 package br.com.fiap.namastreta.config;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
 import br.com.fiap.namastreta.models.Artista;
 import br.com.fiap.namastreta.models.Categoria;
 import br.com.fiap.namastreta.models.Curador;
+import br.com.fiap.namastreta.models.Login;
 import br.com.fiap.namastreta.repository.ArtistaRepository;
 import br.com.fiap.namastreta.repository.CuradorRepository;
+import br.com.fiap.namastreta.repository.LoginRepository;
 
+@Component
 public class DatabaseSeeder implements CommandLineRunner {
-    
-    @Autowired
-    ArtistaRepository artistaRepository;
 
     @Autowired
-    CuradorRepository curadorRepository;
+    private ArtistaRepository artistaRepository;
+
+    @Autowired
+    private CuradorRepository curadorRepository;
+
+    @Autowired
+    private LoginRepository loginRepository;
+
+    // @Autowired
+    // private PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
-        Artista a1 = new Artista("url","Maia", "test",Categoria.ROMANTISMO, null, null);
-        Artista a2 = new Artista("url","Maia", "test",Categoria.NERVOSINHO , null, null);
-        Artista a3 = new Artista("url","Maia", "test",Categoria.RAIVOSO, null, null);
-        artistaRepository.saveAll(List.of(a1, a2, a3));
+        Artista artista = new Artista("url_foto", "Artista 1", "Descrição do Artista 1", Categoria.FOFINHO, null, null);
+        Curador curador = new Curador("caminho/para/foto.jpg", "Nome do Curador", "Descrição do Curador",
+                Categoria.FOFINHO, "2 anos");
 
-        Curador c1 = new Curador("url", "nome", "test 2", Categoria.FOFINHO, "2 anos");
-        Curador c2 = new Curador("url", "nome", "test 3", Categoria.NERVOSINHO, "3 anos");
-        Curador c3 = new Curador("url", "nome", "test 3", Categoria.RAIVOSO, "4 anos");
-        curadorRepository.saveAll(List.of(c1, c2, c3));
-         
-        
+        Login login1 = new Login();
+        login1.setEmail("usuario1@example.com");
+        login1.setSenha("MinhaSenha@123");
+
+        Login login2 = new Login();
+        login2.setEmail("usuario2@example.com");
+        login2.setSenha("MinhaSenha@123");
+
+        // Salvar registros
+        artistaRepository.save(artista);
+        curadorRepository.save(curador);
+        loginRepository.save(login1);
+        loginRepository.save(login2);
     }
 
 }

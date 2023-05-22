@@ -9,7 +9,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,84 +29,75 @@ import jakarta.validation.Valid;
 @RequestMapping("api/artista")
 public class ArtistaController {
 
-    // List<Artista> artistas = new ArrayList<Artista>();
     Logger log = LoggerFactory.getLogger(ArtistaController.class);
 
     @Autowired
-    ArtistaRepository repository; //IoD
+    ArtistaRepository repository;
 
     @Autowired
-    PagedResourcesAssembler<Object> assembler;
-
-
-    @GetMapping
-    public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String nome, @PageableDefault() Pageable pageable) {
-        Page<Artista> artistas = (nome == null)?
-            repository.findAll(pageable):
-            repository.findByNome(nome, pageable);
-
-
-        return assembler.toModel(artistas.map(Artista::toEntityModel));
-    }
-
-
-    // C - Create
-    @PostMapping
-    public ResponseEntity<Object> cadastrar(@RequestBody @Valid Artista artista) {
-        log.info("Cadastrando novo artista: " + artista);
-        repository.save(artista);
-
-        return ResponseEntity
-                .created(artista.toEntityModel().getRequiredLink("self").toUri())
-                .body(artista.toEntityModel());
-
-    }
-
-    // R - read (get-id)
-
-    @GetMapping("{id}")
-    public EntityModel<Artista> show(@PathVariable Long id) {
-        log.info("buscando artista com id " + id);
-        return getArtista(id).toEntityModel();
-
-    }
-
-    
-    // U - update
-    @PutMapping("{id}")
-    public EntityModel<Artista> updateById(@PathVariable Long id, @RequestBody Artista art) {
-        log.info("atualizando despesa com id " + id);
-
-        var artistaEncontrado =getArtista(id);
-
-        art.setId(artistaEncontrado.getId());
-        repository.save(art);
-
-        return art.toEntityModel();
-
-    }
-
-    // D -delete
-    @DeleteMapping("{id}")
-    public ResponseEntity<Artista> deletaComId(@PathVariable Long id) {
-        log.info("Apagando artista com id: " + id);
-
-        var artistaEncontrado = repository.findById(id);
-
-        repository.delete(artistaEncontrado.get());
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(getArtista(id));
-
-    }
+    PagedResourcesAssembler<Artista> assembler;
 
     private Artista getArtista(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RestNotFoundException("Artista não encontrado"));
     }
 
-
     public Class<?> destroy(Long id) {
         return null;
+    }
+
+    @GetMapping
+    public PagedModel<EntityModel<Artista>> index(@RequestParam(required = false) String nome, @PageableDefault() Pageable pageable) {
+        Page<Artista> artistas = (nome == null) ?
+                repository.findAll(pageable) :
+                repository.findByNome(nome, pageable);
+
+        return assembler.toModel(artistas, entity -> entity.toEntityModel());
+    }
+
+    @PostMapping
+    public ResponseEntity<EntityModel<Artista>> cadastrar(@RequestBody @Valid Artista artista) {
+        log.info("Cadastrando novo artista: " + artista);
+        Artista savedArtista = repository.save(artista);
+
+        return ResponseEntity
+                .created(savedArtista.toEntityModel().getRequiredLink("self").toUri())
+                .body(savedArtista.toEntityModel());
+    }
+
+    @GetMapping("{id}")
+    public EntityModel<Artista> show(@PathVariable Long id) {
+        log.info("Buscando artista por id: " + id);
+        Artista artista = getArtista(id);
+        return artista.toEntityModel();
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<EntityModel<Artista>> updateById(@PathVariable Long id, @RequestBody @Valid Artista artista) {
+        log.info("Atualizando artista com id: " + id);
+
+        Artista artistaEncontrado = getArtista(id);
+
+        artistaEncontrado.setFoto(artista.getFoto());
+        artistaEncontrado.setNome(artista.getNome());
+        artistaEncontrado.setDescricao(artista.getDescricao());
+        artistaEncontrado.setCategoria(artista.getCategoria());
+        artistaEncontrado.setObras(artista.getObras());
+        artistaEncontrado.setCurador(artista.getCurador());
+
+        Artista updatedArtista = repository.save(artistaEncontrado);
+
+        return ResponseEntity.ok(updatedArtista.toEntityModel());
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        log.info("Apagando artista com id: " + id);
+
+        Artista artistaEncontrado = getArtista(id);
+        repository.delete(artistaEncontrado);
+
+        return ResponseEntity.noContent().build();
     }
 
 }

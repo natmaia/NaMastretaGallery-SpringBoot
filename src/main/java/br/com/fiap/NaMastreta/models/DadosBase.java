@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size;
 
 @MappedSuperclass
 public abstract class DadosBase {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
@@ -25,48 +25,40 @@ public abstract class DadosBase {
     @Size(min = 5, max = 100)
     private String descricao;
 
-    
     public DadosBase(String foto, String nome, String descricao) {
-        //this.id = id;
         this.foto = foto;
         this.nome = nome;
         this.descricao = descricao;
     }
-    
-    
+
     public DadosBase() {
     }
-
-    
-
-    public String getFoto() {
-        return foto;
-    }
-    public void setFoto(String foto) {
-        this.foto = foto;
-    }
-    public String getNome() {
-        return nome;
-    }
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-    public String getDescricao() {
-        return descricao;
-    }
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
 
     public Long getId() {
         return id;
     }
 
-
-    public void setId(Long id) {
-        this.id = id;
+    public String getFoto() {
+        return foto;
     }
-  
 
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
 }

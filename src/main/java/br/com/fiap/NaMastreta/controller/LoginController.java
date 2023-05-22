@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.namastreta.models.Credencial;
 import br.com.fiap.namastreta.models.Login;
+import br.com.fiap.namastreta.models.Token;
 import br.com.fiap.namastreta.repository.LoginRepository;
 import br.com.fiap.namastreta.service.TokenService;
 import jakarta.validation.Valid;
@@ -19,26 +20,26 @@ import jakarta.validation.Valid;
 public class LoginController {
 
     @Autowired
-    LoginRepository repository;
+    private LoginRepository repository;
 
     @Autowired
-    AuthenticationManager manager;
+    private AuthenticationManager manager;
 
     @Autowired
-    PasswordEncoder encoder;
+    private PasswordEncoder encoder;
 
     @Autowired
-    TokenService tokenService;
+    private TokenService tokenService;
 
     @PostMapping("/api/registrar")
     public ResponseEntity<Login> registrar(@RequestBody @Valid Login login){
         login.setSenha(encoder.encode(login.getSenha()));
-        repository.save(login);
-        return ResponseEntity.status(HttpStatus.CREATED).body(login);
+        Login savedLogin = repository.save(login);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedLogin);
     }
 
     @PostMapping("/api/login")
-    public ResponseEntity<Object> login(@RequestBody @Valid Credencial credencial){
+    public ResponseEntity<Token> login(@RequestBody @Valid Credencial credencial){
         manager.authenticate(credencial.toAuthentication());
 
         var token = tokenService.generateToken(credencial);

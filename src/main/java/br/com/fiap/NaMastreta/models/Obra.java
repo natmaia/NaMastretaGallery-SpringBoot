@@ -27,7 +27,6 @@ import lombok.EqualsAndHashCode;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=true)
 public class Obra extends DadosBase {
- 
 
     @ManyToOne
     @JoinColumn(name = "curador_id")
@@ -37,7 +36,7 @@ public class Obra extends DadosBase {
     @JoinColumn(name = "artista_id")
     private Artista artista;
     
-    @Min(value = 0, message = "deve ser positivo") 
+    @Min(value = 0, message = "Deve ser um valor positivo") 
     @NotNull
     private BigDecimal valor;
 
@@ -47,21 +46,14 @@ public class Obra extends DadosBase {
     public Obra(String foto, String nome, String descricao, Curador curador, Artista artista,
             BigDecimal valor) {
         super(foto, nome, descricao);
-        //this.tamanho = tamanho;
         this.curador = curador;
         this.artista = artista;
         this.valor = valor;
-        setId(getId() + 1);
     }
 
-    // em caso de promoção!
     @Override
     public String toString() {
         return "Obra [valor=" + valor + ", descricao=" + super.getDescricao() + "]";
-    }
-
-    public int size() {
-        return 0;
     }
 
     public EntityModel<Obra> toEntityModel(){
@@ -71,14 +63,10 @@ public class Obra extends DadosBase {
             linkTo(methodOn(ObraController.class).destroy(id)).withRel("delete"),
             linkTo(methodOn(ObraController.class).index(null, Pageable.unpaged())).withRel("all"),
             linkTo(methodOn(ArtistaController.class).show(this.getArtista().getId())).withRel("artista"),
-            linkTo(methodOn(CuradorController.class).show(this.getArtista().getId())).withRel("curador")
+            linkTo(methodOn(CuradorController.class).show(this.getCurador().getId())).withRel("curador")
         );
     }
-
-    public static Object builder() {
-        return null;
-    }
-
 }
+
 
 //@EqualsAndHashCode(callSuper=true) é para o @Data criar da super classe.
