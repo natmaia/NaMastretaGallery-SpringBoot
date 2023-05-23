@@ -19,31 +19,30 @@ public class SecurityConfig {
     @Autowired
     AuthorizationFilter authorizationFilter;
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-            .authorizeHttpRequests()
+                .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.POST, "/api/registrar").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
                 .anyRequest().authenticated()
-            .and()
-            .csrf().disable()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .formLogin().disable()
-            .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
-            .build();
+                .and()
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .formLogin().disable()
+                .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    
 }

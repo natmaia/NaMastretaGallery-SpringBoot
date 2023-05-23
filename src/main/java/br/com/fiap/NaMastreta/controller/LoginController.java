@@ -14,9 +14,12 @@ import br.com.fiap.namastreta.models.Login;
 import br.com.fiap.namastreta.models.Token;
 import br.com.fiap.namastreta.repository.LoginRepository;
 import br.com.fiap.namastreta.service.TokenService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+
 @RestController
+@Tag(name = "auth")
 public class LoginController {
 
     @Autowired

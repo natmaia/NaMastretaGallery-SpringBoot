@@ -23,10 +23,15 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.fiap.namastreta.exception.RestNotFoundException;
 import br.com.fiap.namastreta.models.Artista;
 import br.com.fiap.namastreta.repository.ArtistaRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("api/artista")
+@SecurityRequirement(name = "bearer-key")
 public class ArtistaController {
 
     Logger log = LoggerFactory.getLogger(ArtistaController.class);
@@ -56,6 +61,10 @@ public class ArtistaController {
     }
 
     @PostMapping
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "despesa cadastrada com sucesso"),
+        @ApiResponse(responseCode = "400", description = "dados inválidos, a validação falhou")
+    })
     public ResponseEntity<EntityModel<Artista>> cadastrar(@RequestBody @Valid Artista artista) {
         log.info("Cadastrando novo artista: " + artista);
         Artista savedArtista = repository.save(artista);
@@ -66,6 +75,10 @@ public class ArtistaController {
     }
 
     @GetMapping("{id}")
+    @Operation(
+        summary = "Detalhes de um artista",
+        description = "Retorna os dados de um artista passada pelo parâmetro de path id"
+    )
     public EntityModel<Artista> show(@PathVariable Long id) {
         log.info("Buscando artista por id: " + id);
         Artista artista = getArtista(id);

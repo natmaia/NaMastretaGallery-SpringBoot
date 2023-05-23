@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.fiap.namastreta.exception.RestNotFoundException;
 import br.com.fiap.namastreta.models.Curador;
 import br.com.fiap.namastreta.repository.CuradorRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
 @RestController
@@ -52,6 +55,10 @@ public class CuradorController {
     }
 
     @PostMapping
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "despesa cadastrada com sucesso"),
+        @ApiResponse(responseCode = "400", description = "dados inválidos, a validação falhou")
+    })
     public ResponseEntity<EntityModel<Curador>> create(@RequestBody @Valid Curador curador) {
         log.info("Cadastrando curador: " + curador);
         Curador savedCurador = repository.save(curador);
@@ -62,6 +69,10 @@ public class CuradorController {
     }
 
     @GetMapping("{id}")
+    @Operation(
+        summary = "Detalhes da despesa",
+        description = "Retorna os dados de uma despesa passada pelo parâmetro de path id"
+    )
     public EntityModel<Curador> show(@PathVariable Long id) {
         log.info("Buscando curador por id: " + id);
         Curador curador = getCurador(id);
