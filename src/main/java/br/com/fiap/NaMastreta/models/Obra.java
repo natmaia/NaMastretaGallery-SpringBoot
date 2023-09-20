@@ -1,15 +1,13 @@
 package br.com.fiap.namastreta.models;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import java.math.BigDecimal;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 
-import br.com.fiap.namastreta.controller.ArtistaController;
-import br.com.fiap.namastreta.controller.CuradorController;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import br.com.fiap.namastreta.controller.ObraController;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -25,7 +23,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @Builder
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 public class Obra extends DadosBase {
 
     @ManyToOne
@@ -35,8 +33,8 @@ public class Obra extends DadosBase {
     @ManyToOne
     @JoinColumn(name = "artista_id")
     private Artista artista;
-    
-    @Min(value = 0, message = "Deve ser um valor positivo") 
+
+    @Min(value = 0, message = "Deve ser um valor positivo")
     @NotNull
     private BigDecimal valor;
 
@@ -56,17 +54,15 @@ public class Obra extends DadosBase {
         return "Obra [valor=" + valor + ", descricao=" + super.getDescricao() + "]";
     }
 
+
     public EntityModel<Obra> toEntityModel(){
         return EntityModel.of(
-            this, 
-            linkTo(methodOn(ObraController.class).show(id)).withSelfRel(),
-            linkTo(methodOn(ObraController.class).destroy(id)).withRel("delete"),
-            linkTo(methodOn(ObraController.class).index(null, Pageable.unpaged())).withRel("all"),
-            linkTo(methodOn(ArtistaController.class).show(this.getArtista().getId())).withRel("artista"),
-            linkTo(methodOn(CuradorController.class).show(this.getCurador().getId())).withRel("curador")
-        );
+            this,
+            linkTo(methodOn(ObraController.class).retornaObraComId(id)).withSelfRel(),
+            linkTo(methodOn(ObraController.class).deletaObraComId(id)).withRel("delete"),
+            linkTo(methodOn(ObraController.class).index(null, Pageable.unpaged())).withRel("all")
+            );
     }
 }
 
-
-//@EqualsAndHashCode(callSuper=true) é para o @Data criar da super classe.
+// @EqualsAndHashCode(callSuper=true) é para o @Data criar da super classe.

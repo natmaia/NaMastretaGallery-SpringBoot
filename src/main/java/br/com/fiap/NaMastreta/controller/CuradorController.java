@@ -40,17 +40,13 @@ public class CuradorController {
     @Autowired
     PagedResourcesAssembler<Curador> assembler;
 
-    private Curador getCurador(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RestNotFoundException("Curador não encontrado"));
-    }
-
+    
     @GetMapping
     public PagedModel<EntityModel<Curador>> index(@RequestParam(required = false) String nome, @PageableDefault() Pageable pageable) {
         Page<Curador> curadores = (nome == null) ?
-                repository.findAll(pageable) :
-                repository.findByNome(nome, pageable);
-
+        repository.findAll(pageable) :
+        repository.findByNome(nome, pageable);
+        
         return assembler.toModel(curadores, entity -> entity.toEntityModel());
     }
 
@@ -62,46 +58,51 @@ public class CuradorController {
     public ResponseEntity<EntityModel<Curador>> create(@RequestBody @Valid Curador curador) {
         log.info("Cadastrando curador: " + curador);
         Curador savedCurador = repository.save(curador);
-
+        
         return ResponseEntity
                 .created(savedCurador.toEntityModel().getRequiredLink("self").toUri())
                 .body(savedCurador.toEntityModel());
-    }
-
+            }
+            
     @GetMapping("{id}")
     @Operation(
         summary = "Detalhes da despesa",
         description = "Retorna os dados de uma despesa passada pelo parâmetro de path id"
-    )
-    public EntityModel<Curador> show(@PathVariable Long id) {
-        log.info("Buscando curador por id: " + id);
-        Curador curador = getCurador(id);
-        return curador.toEntityModel();
-    }
-
-    @PutMapping("{id}")
-    public ResponseEntity<EntityModel<Curador>> update(@PathVariable Long id, @RequestBody @Valid Curador curador) {
-        log.info("Atualizando curador com id: " + id);
-
-        Curador curadorEncontrado = getCurador(id);
-
+        )
+        public EntityModel<Curador> show(@PathVariable Long id) {
+            log.info("Buscando curador por id: " + id);
+            Curador curador = getCurador(id);
+            return curador.toEntityModel();
+        }
+        
+        @PutMapping("{id}")
+        public ResponseEntity<EntityModel<Curador>> update(@PathVariable Long id, @RequestBody @Valid Curador curador) {
+            log.info("Atualizando curador com id: " + id);
+            
+            Curador curadorEncontrado = getCurador(id);
+            
         curadorEncontrado.setFoto(curador.getFoto());
         curadorEncontrado.setNome(curador.getNome());
         curadorEncontrado.setDescricao(curador.getDescricao());
-
+        
         Curador updatedCurador = repository.save(curadorEncontrado);
-
+        
         return ResponseEntity.ok(updatedCurador.toEntityModel());
     }
-
+    
     @DeleteMapping("{id}")
     public ResponseEntity<Void> destroy(@PathVariable Long id) {
         log.info("Apagando curador com id: " + id);
-
+        
         Curador curadorEncontrado = getCurador(id);
         repository.delete(curadorEncontrado);
-
+        
         return ResponseEntity.noContent().build();
     }
-
+    
+    private Curador getCurador(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RestNotFoundException("Curador não encontrado"));
+    }
+    
 }

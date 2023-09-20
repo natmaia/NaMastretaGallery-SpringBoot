@@ -22,13 +22,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-
 @Entity
 @Data
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 public class Artista extends DadosBase {
 
     @Enumerated(EnumType.STRING)
@@ -47,18 +46,21 @@ public class Artista extends DadosBase {
         this.curador = curador;
     }
 
-    public EntityModel<Artista> toEntityModel(){
-        return EntityModel.of(
-            this, 
-            linkTo(methodOn(ArtistaController.class).show(getId())).withSelfRel(),
-            linkTo(methodOn(ArtistaController.class).destroy(getId())).withRel("delete"),
-            linkTo(methodOn(ArtistaController.class).index(null, Pageable.unpaged())).withRel("all"),
-            linkTo(methodOn(CuradorController.class).show(getCurador().getId())).withRel("curador"),
-            linkTo(methodOn(ObraController.class).show(getObra().getId())).withRel("obra")
-        );
+    public Artista(Artista a, Curador curador, List<Obra> obras) {
+        super(a.getFoto(), a.getNome(), a.getDescricao());
+        this.categoria = a.getCategoria();
+        this.curador = curador;
+        this.obras = obras;
     }
 
-    private Obra getObra() {
-        return null;
+    public EntityModel<Artista> toEntityModel() {
+        return EntityModel.of(
+                this,
+                linkTo(methodOn(ArtistaController.class).show(getId())).withSelfRel(),
+                linkTo(methodOn(ArtistaController.class).deleteById(getId())).withRel("delete"),
+                linkTo(methodOn(ArtistaController.class).index(null, Pageable.unpaged())).withRel("all"),
+                linkTo(methodOn(CuradorController.class).show(getCurador().getId())).withRel("curador"),
+                linkTo(methodOn(ObraController.class).index(null, Pageable.unpaged())).withRel("obras"));
     }
+
 }

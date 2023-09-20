@@ -50,7 +50,7 @@ public class Curador extends DadosBase {
             linkTo(methodOn(CuradorController.class).destroy(id)).withRel("delete"),
             linkTo(methodOn(CuradorController.class).index(null, Pageable.unpaged())).withRel("all"),
             linkTo(methodOn(ArtistaController.class).show(this.getArtista().getId())).withRel("artista"),
-            linkTo(methodOn(ObraController.class).show(this.getObra().getId())).withRel("obra")
+            linkTo(methodOn(ObraController.class).retornaObraComId(this.getObra().getId())).withRel("obra")
         );
     }
 
