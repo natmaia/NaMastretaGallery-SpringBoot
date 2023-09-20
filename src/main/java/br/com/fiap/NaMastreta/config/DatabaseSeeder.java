@@ -32,9 +32,6 @@ public class DatabaseSeeder implements CommandLineRunner {
     @Autowired
     ObraRepository obraRepository;
 
-    // @Autowired
-    // private PasswordEncoder passwordEncoder;
-
     @Override
     public void run(String... args) throws Exception {
         Curador curador = new Curador("caminho/para/foto.jpg", "Nome do Curador", "Descrição do Curador",
@@ -50,6 +47,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         login2.setEmail("usuario2@example.com");
         login2.setSenha("MinhaSenha@123");
 
+        // Salvar registros
         curadorRepository.save(curador);
         artistaRepository.save(artista);
         loginRepository.save(login1);
@@ -59,7 +57,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                 List.of(
                         new Obra("Foto1", "Jaelson", "descrição", curador, artista, new BigDecimal(400)),
                         new Obra("Foto2", "Nath", "descrição", curador, artista, new BigDecimal(10000))));
-        // Salvar registros
+
     }
 
 }

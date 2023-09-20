@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class Contatos {
+public class Contato {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,7 +38,7 @@ public class Contatos {
     private String redeSocial; // url da rede social
 
 
-    public Contatos(String email, String senha, String redeSocial){
+    public Contato(String email, String senha, String redeSocial){
         this.email = email;
         this.senha = senha;
         this.redeSocial = redeSocial;

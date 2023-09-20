@@ -35,7 +35,7 @@ public class Curador extends DadosBase {
     private String tempoAtuacao;
 
     @OneToOne
-    private Contatos contatos;
+    private Contato contato;
 
     public Curador(String foto, String nome, String descricao, Categoria categoria, String tempoAtuacao) {
         super(foto, nome, descricao);
