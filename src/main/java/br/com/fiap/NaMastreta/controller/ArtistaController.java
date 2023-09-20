@@ -45,6 +45,7 @@ public class ArtistaController {
     public PagedModel<EntityModel<Artista>> index(@RequestParam(required = false) String nome,
             @PageableDefault() Pageable pageable) {
         Page<Artista> artistas = artistaService.GetAll(nome, pageable);
+        
         return assembler.toModel(artistas, entity -> entity.toEntityModel());
     }
 

@@ -16,6 +16,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,6 +38,7 @@ public class Artista extends DadosBase {
     private List<Obra> obras;
 
     @OneToOne
+    @NotNull(message = "Curador não deve ser nulo")
     private Curador curador;
 
     public Artista(String foto, String nome, String descricao, Categoria categoria, List<Obra> obras, Curador curador) {

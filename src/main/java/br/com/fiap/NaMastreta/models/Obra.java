@@ -27,11 +27,13 @@ import lombok.EqualsAndHashCode;
 public class Obra extends DadosBase {
 
     @ManyToOne
+    @NotNull(message = "Curador não deve ser nulo")
     @JoinColumn(name = "curador_id")
     private Curador curador;
 
     @ManyToOne
     @JoinColumn(name = "artista_id")
+    @NotNull(message = "artista não deve ser nulo")
     private Artista artista;
 
     @Min(value = 0, message = "Deve ser um valor positivo")
@@ -54,14 +56,12 @@ public class Obra extends DadosBase {
         return "Obra [valor=" + valor + ", descricao=" + super.getDescricao() + "]";
     }
 
-
-    public EntityModel<Obra> toEntityModel(){
+    public EntityModel<Obra> toEntityModel() {
         return EntityModel.of(
-            this,
-            linkTo(methodOn(ObraController.class).retornaObraComId(id)).withSelfRel(),
-            linkTo(methodOn(ObraController.class).deletaObraComId(id)).withRel("delete"),
-            linkTo(methodOn(ObraController.class).index(null, Pageable.unpaged())).withRel("all")
-            );
+                this,
+                linkTo(methodOn(ObraController.class).retornaObraComId(id)).withSelfRel(),
+                linkTo(methodOn(ObraController.class).deletaObraComId(id)).withRel("delete"),
+                linkTo(methodOn(ObraController.class).index(null, Pageable.unpaged())).withRel("all"));
     }
 }
 

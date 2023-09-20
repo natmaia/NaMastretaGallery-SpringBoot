@@ -1,7 +1,5 @@
 package br.com.fiap.namastreta.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,8 +35,8 @@ public class ArtistaService {
         Curador curador = curadorRepository.findById(artista.getCurador().getId())
                 .orElseThrow(() -> new RestNotFoundException("Artista não encontrado"));
 
-        List<Obra> obras = obraRepository.findByArtistaId(artista.getId());
-        return new Artista(artista, curador, obras);
+        Page<Obra> obras = obraRepository.findByArtistaId(artista.getId(), pageable);
+        return new Artista(artista, curador, obras.getContent());
     }
 
     public Page<Artista> GetAll(String nome, Pageable pageable) {
@@ -46,6 +44,9 @@ public class ArtistaService {
     }
 
     public Artista save(Artista artista) {
+
+        curadorRepository.save(artista.getCurador());
+
         return artistaRepository.save(artista);
     }
 
