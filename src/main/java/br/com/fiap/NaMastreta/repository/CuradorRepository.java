@@ -10,6 +10,4 @@ public interface CuradorRepository extends JpaRepository<Curador, Long> {
 
     Page<Curador> findByNome(String nome, Pageable pageable);
 
-    //Page<Curador> findByNome(String nome, org.springframework.data.domain.Pageable pageable);
-    
 }

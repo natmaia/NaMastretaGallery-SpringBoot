@@ -16,8 +16,9 @@ import br.com.fiap.namastreta.repository.LoginRepository;
 import br.com.fiap.namastreta.service.TokenService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
-
+@Slf4j
 @RestController
 @Tag(name = "auth")
 public class LoginController {
@@ -35,18 +36,23 @@ public class LoginController {
     private TokenService tokenService;
 
     @PostMapping("/api/registrar")
-    public ResponseEntity<Login> registrar(@RequestBody @Valid Login login){
+    public ResponseEntity<Login> registrar(@RequestBody @Valid Login login) {
+
+        log.info("Criando login" + login.getEmail());
+
         login.setSenha(encoder.encode(login.getSenha()));
         Login savedLogin = repository.save(login);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedLogin);
     }
 
     @PostMapping("/api/login")
-    public ResponseEntity<Token> login(@RequestBody @Valid Credencial credencial){
+    public ResponseEntity<Token> login(@RequestBody @Valid Credencial credencial) {
         manager.authenticate(credencial.toAuthentication());
 
         var token = tokenService.generateToken(credencial);
+
+        log.info("Usuario logado" + credencial.email());
         return ResponseEntity.ok(token);
     }
-    
+
 }

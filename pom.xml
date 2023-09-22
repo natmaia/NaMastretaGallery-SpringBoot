@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.0.5</version>
+		<version>3.1.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -24,6 +24,12 @@
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.1.0</version>
+		</dependency>
+
+		<dependency>
+  			<groupId>org.atteo</groupId>
+  			<artifactId>evo-inflector</artifactId>
+  			<version>1.2</version>
 		</dependency>
 
 		<dependency>
@@ -91,6 +97,12 @@
 			<version>4.4.0</version>
 		</dependency>
 
+
+		<dependency>
+			<groupId>com.oracle.database.jdbc</groupId>
+			<artifactId>ojdbc8</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -35,7 +35,6 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             Authentication auth = new UsernamePasswordAuthenticationToken(usuario.getEmail(), null, usuario.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
-
         // chamar o próximo filtro
         filterChain.doFilter(request, response);
     }
@@ -46,7 +45,6 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         if (header == null || header.isEmpty() || !header.startsWith("Bearer ")) {
             return null;
         }
-
         return header.replace("Bearer ", "");
     }
 }
