@@ -38,14 +38,14 @@ public class DatabaseSeeder implements CommandLineRunner {
                                                 .nome("Curador 1")
                                                 .descricao("Descrição 1")
                                                 .foto("foto1.jpg")
-                                                .categoria(Categoria.NERVOSINHO)
+                                                .categoria(Categoria.CAOS_ARTISTICO)
                                                 .tempoAtuacao("1 ano")
                                                 .build(),
                                 Curador.builder()
                                                 .nome("Curador 2")
                                                 .descricao("Descrição 2")
                                                 .foto("foto2.jpg")
-                                                .categoria(Categoria.NERVOSINHO)
+                                                .categoria(Categoria.CORES_VIBRANTES)
                                                 .tempoAtuacao("2 ano")
                                                 .build()));
 
@@ -53,13 +53,13 @@ public class DatabaseSeeder implements CommandLineRunner {
                                 Artista.builder()
                                                 .nome("Artista 01")
                                                 .foto("foto03.jpg")
-                                                .categoria(Categoria.GOSTOSISSIMO)
+                                                .categoria(Categoria.CAOS_ARTISTICO)
                                                 .curador(curadorRepository.findById(1l).get())
                                                 .build(),
                                 Artista.builder()
                                                 .nome("Artista 02")
                                                 .foto("foto04.jpg")
-                                                .categoria(Categoria.NERVOSINHO)
+                                                .categoria(Categoria.CORES_VIBRANTES)
                                                 .curador(curadorRepository.findById(2l).get())
                                                 .build()));
 

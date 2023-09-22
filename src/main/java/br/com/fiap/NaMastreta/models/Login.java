@@ -16,13 +16,14 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @AllArgsConstructor
 @Builder
-public class Login implements UserDetails  {
+@NoArgsConstructor
+public class Login implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,18 +31,18 @@ public class Login implements UserDetails  {
 
     @Email
     private String email;
-    //para não perder a internacionalização (message = "O email deve ser um endereço válido")
+    // para não perder a internacionalização (message = "O email deve ser um
+    // endereço válido")
 
     // @NotBlank(message = "A senha não pode estar em branco")
-    // @Size(min = 8, max = 20, message = "A senha deve ter entre 8 e 20 caracteres")
-    // //@Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[@%&._-]).+$", message = "A senha deve conter letras e pelo menos um dos seguintes caracteres especiais: @, %, &, . , _ ou -")
+    // @Size(min = 8, max = 20, message = "A senha deve ter entre 8 e 20
+    // caracteres")
+    // //@Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[@%&._-]).+$", message = "A senha
+    // deve conter letras e pelo menos um dos seguintes caracteres especiais: @, %,
+    // &, . , _ ou -")
     // private String senha;
     @NotNull
     private String senha;
-
-    public  Login(){
-        
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -76,6 +77,6 @@ public class Login implements UserDetails  {
     @Override
     public boolean isEnabled() {
         return true;
-    }  
+    }
 
 }
