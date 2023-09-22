@@ -30,12 +30,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                         .requestMatchers(new AntPathRequestMatcher("/api/registrar")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/login")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/h2-console/login.do")).permitAll()
-                        
                         )
                         .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        if (env.getActiveProfiles().length > 0 && env.getActiveProfiles()[0].equals("dev")) {
+        if (env.getActiveProfiles().length > 0 && env.getActiveProfiles()[0].equals("open")) {
             http.authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests.anyRequest().permitAll());
         } else {
             http.authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests.anyRequest().authenticated());

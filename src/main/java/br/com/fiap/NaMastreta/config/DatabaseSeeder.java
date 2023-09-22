@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import br.com.fiap.namastreta.models.Artista;
@@ -16,6 +17,7 @@ import br.com.fiap.namastreta.repository.LoginRepository;
 import br.com.fiap.namastreta.repository.ObraRepository;
 
 @Component
+@Profile("dev")
 public class DatabaseSeeder implements CommandLineRunner {
 
         @Autowired
