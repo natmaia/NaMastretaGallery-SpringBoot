@@ -18,9 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.fiap.namastreta.exception.RestNotFoundException;
 import br.com.fiap.namastreta.models.Obra;
-import br.com.fiap.namastreta.repository.ObraRepository;
+import br.com.fiap.namastreta.service.ObraService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ObraController {
 
     @Autowired
-    private ObraRepository obraRepository;
+    ObraService obraService;
 
     @Autowired
     PagedResourcesAssembler<Object> assembler;
@@ -39,8 +38,17 @@ public class ObraController {
     public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String descricao,
             @PageableDefault(size = 5) Pageable pageable) {
 
-        Page<Obra> obras = (descricao == null) ? obraRepository.findAll(pageable)
-                : obraRepository.findByDescricaoContaining(descricao, pageable);
+        Page<Obra> obras = obraService.getObras(descricao, pageable);
+
+        return assembler.toModel(obras.map(Obra::toEntityModel));
+
+    }
+
+    @GetMapping("artista/{id}")
+    public PagedModel<EntityModel<Object>> getByIdArtista(@PathVariable Long id,
+            @PageableDefault(size = 5) Pageable pageable) {
+
+        Page<Obra> obras = obraService.getbyIdArtista(id, pageable);
 
         return assembler.toModel(obras.map(Obra::toEntityModel));
 
@@ -49,7 +57,7 @@ public class ObraController {
     @PostMapping
     public ResponseEntity<EntityModel<Obra>> cadastrarObra(@RequestBody @Valid Obra obra) {
         log.info("Cadastrando a obra: " + obra);
-        Obra savedObra = obraRepository.save(obra);
+        Obra savedObra = obraService.save(obra);
 
         return ResponseEntity
                 .created(savedObra.toEntityModel().getRequiredLink("self").toUri())
@@ -60,38 +68,23 @@ public class ObraController {
     public ResponseEntity<EntityModel<Obra>> retornaObraComId(@PathVariable Long id) {
         log.info("Buscando obra por id: " + id);
 
-        return ResponseEntity.ok(getObra(id).toEntityModel());
+        return ResponseEntity.ok(obraService.getObra(id).toEntityModel());
     }
 
     @PutMapping("{id}")
     public ResponseEntity<EntityModel<Obra>> update(@PathVariable Long id, @RequestBody @Valid Obra obra) {
         log.info("Atualizando obra com id: " + id);
 
-        Obra obraEncontrada = getObra(id);
-
-        obraEncontrada.setDescricao(obra.getDescricao());
-        obraEncontrada.setFoto(obra.getFoto());
-        obraEncontrada.setArtista(obra.getArtista());
-        obraEncontrada.setCurador(obra.getCurador());
-        obraEncontrada.setValor(obra.getValor());
-
-        Obra updatedObra = obraRepository.save(obraEncontrada);
-
-        return ResponseEntity.ok(updatedObra.toEntityModel());
+        return ResponseEntity.ok(obraService.update(obra, id).toEntityModel());
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deletaObraComId(@PathVariable Long id) {
         log.info("Apagando obra através do id: " + id);
 
-        Obra obraEncontrada = getObra(id);
-        obraRepository.delete(obraEncontrada);
+        obraService.delete(id);
 
         return ResponseEntity.noContent().build();
     }
 
-    private Obra getObra(Long id) {
-        return obraRepository.findById(id)
-                .orElseThrow(() -> new RestNotFoundException("Obra não encontrada"));
-    }
 }

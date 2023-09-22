@@ -29,8 +29,11 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                         .requestMatchers(new AntPathRequestMatcher("/api/registrar")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/login")).permitAll())
-                .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
+                        .requestMatchers(new AntPathRequestMatcher("/api/login")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/h2-console/login.do")).permitAll()
+                        
+                        )
+                        .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
         if (env.getActiveProfiles().length > 0 && env.getActiveProfiles()[0].equals("dev")) {
             http.authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests.anyRequest().permitAll());

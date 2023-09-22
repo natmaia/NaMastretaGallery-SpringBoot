@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.fiap.namastreta.DTO.ArtistaDTO;
 import br.com.fiap.namastreta.models.Artista;
 import br.com.fiap.namastreta.service.ArtistaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,13 +40,13 @@ public class ArtistaController {
     ArtistaService artistaService;
 
     @Autowired
-    PagedResourcesAssembler<Artista> assembler;
+    PagedResourcesAssembler<ArtistaDTO> assembler;
 
     @GetMapping
-    public PagedModel<EntityModel<Artista>> index(@RequestParam(required = false) String nome,
+    public PagedModel<EntityModel<ArtistaDTO>> index(@RequestParam(required = false) String nome,
             @PageableDefault() Pageable pageable) {
-        Page<Artista> artistas = artistaService.GetAll(nome, pageable);
-        
+        Page<ArtistaDTO> artistas = artistaService.GetAll(nome, pageable).map(ArtistaDTO::new);
+
         return assembler.toModel(artistas, entity -> entity.toEntityModel());
     }
 
@@ -65,20 +66,21 @@ public class ArtistaController {
 
     @GetMapping("{id}")
     @Operation(summary = "Detalhes de um artista", description = "Retorna os dados de um artista passada pelo parâmetro de path id")
-    public EntityModel<Artista> show(@PathVariable Long id) {
+    public EntityModel<ArtistaDTO> show(@PathVariable Long id) {
 
         log.info("Buscando artista por id: " + id);
 
-        Artista artista = artistaService.getArtistaWithCuradorAndArtista(id, null);
+        Artista artista = artistaService.getArtista(id);
 
-        return artista.toEntityModel();
+        return ArtistaDTO.toEntityModel(artista);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<EntityModel<Artista>> updateById(@PathVariable Long id, @RequestBody @Valid Artista artista) {
+    public ResponseEntity<EntityModel<ArtistaDTO>> updateById(@PathVariable Long id,
+            @RequestBody @Valid Artista artista) {
         log.info("Atualizando artista com id: " + id);
 
-        return ResponseEntity.ok(artistaService.update(id, artista).toEntityModel());
+        return ResponseEntity.ok(ArtistaDTO.toEntityModel(artistaService.update(id, artista)));
     }
 
     @DeleteMapping("{id}")
