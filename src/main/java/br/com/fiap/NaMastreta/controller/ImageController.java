@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -39,10 +40,16 @@ public class ImageController {
     @PostMapping("/upload")
     public ResponseEntity<Image> uploadImage(@RequestParam("file") MultipartFile file, HttpServletRequest request)
             throws IOException {
-       
+
         File uploadDir = new File(imageUploadDirectory);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
+        }
+
+        if ((file.getSize() / (1024 * 1024)) > 1) {
+            throw new FileSizeLimitExceededException("Arquivo com o limite maior que o permitido",
+                    file.getSize() / (1024 * 1024),
+                    1);
         }
 
         String imageName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
@@ -64,7 +71,7 @@ public class ImageController {
 
     @GetMapping("/{imageName}")
     public ResponseEntity<byte[]> getImage(@PathVariable String imageName) throws IOException {
-       
+
         String imageUploadDirectory = environment.getProperty("image.upload.directory");
         Path imagePath = Path.of(imageUploadDirectory, imageName);
 
