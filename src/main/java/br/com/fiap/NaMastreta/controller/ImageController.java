@@ -39,13 +39,12 @@ public class ImageController {
     @PostMapping("/upload")
     public ResponseEntity<Image> uploadImage(@RequestParam("file") MultipartFile file, HttpServletRequest request)
             throws IOException {
-        // Verifique se o diretório de upload de imagens existe, caso contrário, crie-o.
+       
         File uploadDir = new File(imageUploadDirectory);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }
 
-        // Gere um nome único para a imagem.
         String imageName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
 
         // Salve a imagem no diretório de upload.
@@ -63,9 +62,9 @@ public class ImageController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new Image(imageUrl));
     }
 
-    @GetMapping("/{imageName:.+}")
+    @GetMapping("/{imageName}")
     public ResponseEntity<byte[]> getImage(@PathVariable String imageName) throws IOException {
-        // Carregue a imagem a partir do diretório de upload.
+       
         String imageUploadDirectory = environment.getProperty("image.upload.directory");
         Path imagePath = Path.of(imageUploadDirectory, imageName);
 
