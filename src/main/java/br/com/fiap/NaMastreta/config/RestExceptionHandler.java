@@ -19,10 +19,11 @@ import br.com.fiap.namastreta.models.RestValidationError;
 public class RestExceptionHandler {
 
     Logger log = LoggerFactory.getLogger(getClass());
-    
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<List<RestValidationError>> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e){
+    public ResponseEntity<List<RestValidationError>> methodArgumentNotValidExceptionHandler(
+            MethodArgumentNotValidException e) {
         log.error("erro de validacao");
         List<RestValidationError> errors = new ArrayList<>();
         e.getFieldErrors().forEach(v -> errors.add(new RestValidationError(v.getField(), v.getDefaultMessage())));
@@ -30,12 +31,11 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler(RestNotFoundException.class)
-    public ResponseEntity<RestValidationError> RestNotFoundExceptionHandler(RestNotFoundException e){
+    public ResponseEntity<RestValidationError> RestNotFoundExceptionHandler(RestNotFoundException e) {
         log.error("erro de validacao");
-       
+
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RestValidationError(null, e.getMessage()));
     }
-
 
 }
 // Aqui vc determina a mensagem de cada exception
