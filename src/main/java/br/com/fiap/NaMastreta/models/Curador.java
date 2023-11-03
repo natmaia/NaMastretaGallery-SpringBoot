@@ -42,7 +42,6 @@ public class Curador implements Serializable {
     private String nome;
 
     @NotBlank(message = "A descrição é obrigatória")
-    @Size(min = 5, max = 100)
     private String descricao;
 
     @NotBlank(message = "A foto é obrigatória")

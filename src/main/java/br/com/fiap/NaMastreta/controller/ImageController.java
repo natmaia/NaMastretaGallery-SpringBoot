@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.UUID;
 
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +51,7 @@ public class ImageController {
                     1);
         }
 
-        String imageName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        String imageName =  file.getOriginalFilename();
 
         // Salve a imagem no diretório de upload.
         Path imagePath = Path.of(imageUploadDirectory, imageName);

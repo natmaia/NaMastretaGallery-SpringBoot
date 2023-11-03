@@ -39,14 +39,14 @@ public class DatabaseSeeder implements CommandLineRunner {
                                 Curador.builder()
                                                 .nome("Curador 1")
                                                 .descricao("Descrição 1")
-                                                .foto("foto1.jpg")
+                                                .foto("https://i.pravatar.cc/150")
                                                 .categoria(Categoria.CAOS_ARTISTICO)
                                                 .tempoAtuacao("1 ano")
                                                 .build(),
                                 Curador.builder()
                                                 .nome("Curador 2")
                                                 .descricao("Descrição 2")
-                                                .foto("foto2.jpg")
+                                                .foto("https://i.pravatar.cc/150")
                                                 .categoria(Categoria.CORES_VIBRANTES)
                                                 .tempoAtuacao("2 ano")
                                                 .build()));

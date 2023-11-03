@@ -52,7 +52,9 @@ public class CuradorController {
             @ApiResponse(responseCode = "400", description = "dados inválidos, a validação falhou")
     })
     public ResponseEntity<EntityModel<Curador>> create(@RequestBody @Valid Curador curador) {
+
         log.info("Cadastrando curador: " + curador);
+
         Curador savedCurador = curadorService.save(curador);
 
         return ResponseEntity
